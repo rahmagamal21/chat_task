@@ -1,4 +1,6 @@
+import 'package:chat_task/Features/chat/presentation/views/widgets/chat_header.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/input_field.dart';
+import 'package:chat_task/core/common/res/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,20 +21,28 @@ class ChatPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               border: Border.all(
                 width: 0.5,
-                color: const Color(0xffD1B06B).withOpacity(0.29),
+                color: AllColors.border,
               ),
             ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    reverse: true,
-                    itemBuilder: (context, index) {},
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10),
+              child: Column(
+                children: [
+                  const ChatHeader(),
+                  Divider(
+                    height: 40.h,
+                    color: AllColors.border,
                   ),
-                ),
-                const InputField()
-              ],
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      reverse: true,
+                      itemBuilder: (context, index) {},
+                    ),
+                  ),
+                  const InputField()
+                ],
+              ),
             ),
           ),
         ),
