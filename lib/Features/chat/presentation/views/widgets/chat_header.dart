@@ -12,7 +12,7 @@ class ChatHeader extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/call.svg'),
         SvgPicture.asset(
-          'assets/images/Maskgroup.svg',
+          'assets/images/maskgroup.svg',
           width: 60.w,
           height: 60.h,
         ),

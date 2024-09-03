@@ -28,19 +28,27 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  audio_waveforms: ^1.0.5
+  chat_bubbles: ^1.6.0
   cupertino_icons: ^1.0.8
+  file_picker: ^8.1.2
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.6
   flutter_localizations:
     sdk: flutter
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.10+1
+  freezed_annotation: ^2.4.4
+  image_picker: ^1.1.2
   intl: ^0.19.0
 
 dev_dependencies:
+  build_runner: ^2.4.12
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
+  freezed: ^2.5.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
