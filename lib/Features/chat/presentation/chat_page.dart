@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/chat_header.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/input_field.dart';
 import 'package:chat_task/core/common/res/colors.dart';
@@ -90,6 +89,22 @@ class ChatPage extends StatelessWidget {
     );
   }
 
+  Future<int> getFileSize(String filePath) async {
+    final file = File(filePath);
+    final fileSize = await file.length();
+    return fileSize;
+  }
+
+  String formatFileSize(int bytes) {
+    if (bytes >= 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    } else if (bytes >= 1024) {
+      return '${(bytes / 1024).toStringAsFixed(2)} KB';
+    } else {
+      return '$bytes bytes';
+    }
+  }
+
   Widget _buildChatBubble(
       {required ChatMessage message,
       required BuildContext context,
@@ -158,14 +173,86 @@ class ChatPage extends StatelessWidget {
       //   isSender: message.isSender,
       // );
       case MessageType.document:
-        return BubbleSpecialThree(
-          text: "📄 ${message.content}",
-          isSender: message.isSender,
-          color:
-              message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
-          tail: true,
-          textStyle: Styles.messageStyle(),
+        return Container(
+          constraints: BoxConstraints(maxWidth: 263.w, minWidth: 122.w),
+          padding: EdgeInsets.all(15.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomRight: const Radius.circular(10),
+              bottomLeft: const Radius.circular(10),
+              topLeft:
+                  message.isSender ? const Radius.circular(10) : Radius.zero,
+              topRight:
+                  message.isSender ? Radius.zero : const Radius.circular(10),
+            ),
+            color: message.isSender
+                ? AllColors.sendBubble
+                : AllColors.receiveBubble,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/file.png',
+                width: 30.w,
+                height: 30.h,
+              ),
+              //SvgPicture.asset('assets/images/attach-square.svg'),
+              SizedBox(
+                width: 8.w,
+              ),
+
+              // Image.file(
+              //   File(message.content),
+              //   fit: BoxFit.cover,
+              // ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    message.content.split('/').last,
+                    style: Styles.messageStyle(),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  FutureBuilder<int>(
+                    future: getFileSize(message.content),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text(
+                          'Loading...',
+                          style: Styles.hintStyle().copyWith(fontSize: 10),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text(
+                          'Error',
+                          style: Styles.hintStyle().copyWith(fontSize: 10),
+                        );
+                      } else if (snapshot.hasData) {
+                        final formattedSize = formatFileSize(snapshot.data!);
+                        return Text(
+                          formattedSize,
+                          style: Styles.hintStyle().copyWith(fontSize: 10),
+                        ); // Display the file size
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
+      // return BubbleSpecialThree(
+      //   text: "📄 ${message.content}",
+      //   isSender: message.isSender,
+      //   color:
+      //       message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
+      //   tail: true,
+      //   textStyle: Styles.messageStyle(),
+      // );
       case MessageType.voice:
         return Container(
           constraints: BoxConstraints(maxWidth: 260.w, minWidth: 122.w),

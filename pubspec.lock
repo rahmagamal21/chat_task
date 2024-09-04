@@ -611,7 +611,7 @@ packages:
     source: hosted
     version: "2.1.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
@@ -674,6 +674,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  pdf_image_renderer:
+    dependency: "direct main"
+    description:
+      name: pdf_image_renderer
+      sha256: b5420b7f3e0671deedd68fdd9fe6a63c696fa90170de8d4c57c061aa83f08131
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   petitparser:
     dependency: transitive
     description:
@@ -888,7 +896,7 @@ packages:
     source: hosted
     version: "1.0.1"
   typed_data:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: typed_data
       sha256: facc8d6582f16042dd49f2463ff1bd6e2c9ef9f3d5da3d9b087e244a7b564b3c

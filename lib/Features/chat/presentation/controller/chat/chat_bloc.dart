@@ -225,6 +225,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (result != null) {
       add(ChatEvent.sendDocument(result.files.first.path!));
     }
+    
   }
 
   Future<void> pickImage() async {
@@ -270,6 +271,37 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
     return [];
   }
+
+  // Future<String?> extractFirstPageImage(String pdfPath) async {
+
+  //   final document = PdfImageRendererPdf(path: pdfPath);
+  //   await document.open();
+  //   await document.openPage(pageIndex: 0);
+  //   //final page = await document.openPage(pageIndex: 0);
+  //   final image = await document.renderPage(
+  //     pageIndex: 0,
+  //     width: 300,
+  //     height: 400,
+  //     scale: 1,
+  //     //format: PdfImageRendererFormat.png,
+  //   );
+
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   final imagePath =
+  //       '${directory.path}/images/first_page_${DateTime.now().millisecondsSinceEpoch}.png';
+  //   final file = File(imagePath);
+  //   //await file.writeAsBytes(image);
+
+  //   if (image != null) {
+  //     await file.writeAsBytes(image);
+  //   }
+
+  //   // Close the page and document
+  //   await document.closePage(pageIndex: 0);
+  //   await document.close();
+
+  //   return imagePath;
+  // }
 
   @override
   Future<void> close() {
