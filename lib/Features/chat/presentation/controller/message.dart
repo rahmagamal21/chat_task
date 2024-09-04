@@ -11,5 +11,6 @@ class ChatMessage with _$ChatMessage {
     required String content,
     required MessageType type,
     required bool isSender,
+    required String timing,
   }) = _Message;
 }

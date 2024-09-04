@@ -20,6 +20,7 @@ mixin _$ChatMessage {
   String get content => throw _privateConstructorUsedError;
   MessageType get type => throw _privateConstructorUsedError;
   bool get isSender => throw _privateConstructorUsedError;
+  String get timing => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -34,7 +35,8 @@ abstract class $ChatMessageCopyWith<$Res> {
           ChatMessage value, $Res Function(ChatMessage) then) =
       _$ChatMessageCopyWithImpl<$Res, ChatMessage>;
   @useResult
-  $Res call({int id, String content, MessageType type, bool isSender});
+  $Res call(
+      {int id, String content, MessageType type, bool isSender, String timing});
 }
 
 /// @nodoc
@@ -56,6 +58,7 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
     Object? content = null,
     Object? type = null,
     Object? isSender = null,
+    Object? timing = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -74,6 +77,10 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
           ? _value.isSender
           : isSender // ignore: cast_nullable_to_non_nullable
               as bool,
+      timing: null == timing
+          ? _value.timing
+          : timing // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -86,7 +93,8 @@ abstract class _$$MessageImplCopyWith<$Res>
       __$$MessageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String content, MessageType type, bool isSender});
+  $Res call(
+      {int id, String content, MessageType type, bool isSender, String timing});
 }
 
 /// @nodoc
@@ -106,6 +114,7 @@ class __$$MessageImplCopyWithImpl<$Res>
     Object? content = null,
     Object? type = null,
     Object? isSender = null,
+    Object? timing = null,
   }) {
     return _then(_$MessageImpl(
       id: null == id
@@ -124,6 +133,10 @@ class __$$MessageImplCopyWithImpl<$Res>
           ? _value.isSender
           : isSender // ignore: cast_nullable_to_non_nullable
               as bool,
+      timing: null == timing
+          ? _value.timing
+          : timing // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -135,7 +148,8 @@ class _$MessageImpl implements _Message {
       {required this.id,
       required this.content,
       required this.type,
-      required this.isSender});
+      required this.isSender,
+      required this.timing});
 
   @override
   final int id;
@@ -145,10 +159,12 @@ class _$MessageImpl implements _Message {
   final MessageType type;
   @override
   final bool isSender;
+  @override
+  final String timing;
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender)';
+    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing)';
   }
 
   @override
@@ -160,11 +176,13 @@ class _$MessageImpl implements _Message {
             (identical(other.content, content) || other.content == content) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.isSender, isSender) ||
-                other.isSender == isSender));
+                other.isSender == isSender) &&
+            (identical(other.timing, timing) || other.timing == timing));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, content, type, isSender);
+  int get hashCode =>
+      Object.hash(runtimeType, id, content, type, isSender, timing);
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -180,7 +198,8 @@ abstract class _Message implements ChatMessage {
       {required final int id,
       required final String content,
       required final MessageType type,
-      required final bool isSender}) = _$MessageImpl;
+      required final bool isSender,
+      required final String timing}) = _$MessageImpl;
 
   @override
   int get id;
@@ -190,6 +209,8 @@ abstract class _Message implements ChatMessage {
   MessageType get type;
   @override
   bool get isSender;
+  @override
+  String get timing;
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.

@@ -19,6 +19,7 @@ class InputField extends StatelessWidget {
       builder: (context, state) {
         return state.isRecording
             ? Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
                     child: AudioWaveforms(
@@ -30,6 +31,9 @@ class InputField extends StatelessWidget {
                         showMiddleLine: false,
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    width: 10.w,
                   ),
                   Text("${state.recordingTime} sec"),
                   IconButton(

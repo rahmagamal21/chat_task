@@ -9,7 +9,6 @@ import 'package:chat_task/core/common/res/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 import 'controller/chat/chat_bloc.dart';
 import 'controller/message.dart';
@@ -19,8 +18,6 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final time = DateFormat('h:mm a').format(now);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -78,7 +75,7 @@ class ChatPage extends StatelessWidget {
                                   width: 10.w,
                                 ),
                                 Text(
-                                  time,
+                                  message.timing,
                                   style: Styles.time(),
                                 ),
                               ],
@@ -161,32 +158,49 @@ class ChatPage extends StatelessWidget {
           textStyle: Styles.messageStyle(),
         );
       case MessageType.voice:
-        return Row(
-          mainAxisAlignment: message.isSender
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
-          children: [
-            AudioFileWaveforms(
-              playerController: playerController,
-              size: const Size(200, 50),
-              playerWaveStyle: const PlayerWaveStyle(
-                liveWaveColor: Colors.blue,
-                fixedWaveColor: Colors.grey,
-                spacing: 8.0,
-              ),
-              enableSeekGesture: true,
-              waveformType: WaveformType.long,
+        return Container(
+          constraints: BoxConstraints(maxWidth: 260.w, minWidth: 122.w),
+          padding: EdgeInsets.all(15.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomRight: const Radius.circular(10),
+              bottomLeft: const Radius.circular(10),
+              topLeft:
+                  message.isSender ? const Radius.circular(10) : Radius.zero,
+              topRight:
+                  message.isSender ? Radius.zero : const Radius.circular(10),
             ),
-            IconButton(
-              icon: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.blue,
+            color: message.isSender
+                ? AllColors.sendBubble
+                : AllColors.receiveBubble,
+          ),
+          child: Row(
+            mainAxisAlignment: message.isSender
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            children: [
+              AudioFileWaveforms(
+                playerController: playerController,
+                size: const Size(200, 50),
+                playerWaveStyle: const PlayerWaveStyle(
+                  liveWaveColor: Colors.blue,
+                  fixedWaveColor: Colors.grey,
+                  spacing: 8.0,
+                ),
+                enableSeekGesture: true,
+                waveformType: WaveformType.long,
               ),
-              onPressed: () {
-                onPlayPause(isPlaying);
-              },
-            ),
-          ],
+              GestureDetector(
+                child: Icon(
+                  isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.blue,
+                ),
+                onTap: () {
+                  onPlayPause(isPlaying);
+                },
+              ),
+            ],
+          ),
         );
       default:
         return const SizedBox();
