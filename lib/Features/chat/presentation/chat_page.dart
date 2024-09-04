@@ -56,6 +56,7 @@ class ChatPage extends StatelessWidget {
                                 _buildChatBubble(
                                   message: message,
                                   context: context,
+                                  playerController: PlayerController(),
                                 ),
                                 SizedBox(
                                   width: 10.w,
@@ -89,12 +90,13 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  Widget _buildChatBubble({
-    required ChatMessage message,
-    required BuildContext context,
-    //required bool isPlaying,
-    // required Function(bool) onPlayPause,
-  }) {
+  Widget _buildChatBubble(
+      {required ChatMessage message,
+      required BuildContext context,
+      required PlayerController playerController
+      //required bool isPlaying,
+      // required Function(bool) onPlayPause,
+      }) {
     switch (message.type) {
       case MessageType.text:
         return Container(
@@ -187,7 +189,7 @@ class ChatPage extends StatelessWidget {
                 : MainAxisAlignment.start,
             children: [
               AudioFileWaveforms(
-                playerController: message.playerController!,
+                playerController: playerController,
                 size: Size(200.w, 40.h),
                 playerWaveStyle: const PlayerWaveStyle(
                     liveWaveColor: Colors.blue,

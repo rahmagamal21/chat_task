@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:file_picker/file_picker.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../message.dart';
 
@@ -31,6 +35,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<RecordingCountDown>((event, emit) => emit(
           state.copyWith(recordingTime: event.secondsRemainin),
         ));
+    on<LoadMessagesSuccess>((event, emit) => emit(
+          state.copyWith(messages: event.loadedMessages),
+        ));
+    _loadMessages();
 
     // Listen to player events
     // playerController.onCompletion.listen((_) {
@@ -39,6 +47,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     //     _currentPlayingMessageId = null;
     //   }
     // });
+  }
+
+  Future<void> _loadMessages() async {
+    final loadedMessages = await loadMessages();
+    add(LoadMessagesSuccess(loadedMessages));
   }
 
   void _onSendMessage(SendMessage event, Emitter<ChatState> emit) {
@@ -56,7 +69,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  void _onSendImage(SendImage event, Emitter<ChatState> emit) {
+  void _onSendImage(SendImage event, Emitter<ChatState> emit) async {
     final time = DateFormat('h:mm a').format(DateTime.now());
     final newMessage = ChatMessage(
       content: event.imagePath,
@@ -65,10 +78,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       isSender: true,
       timing: time,
     );
-    emit(state.copyWith(messages: [newMessage, ...state.messages]));
+    final imageFile = File(event.imagePath);
+    final savedPath =
+        await saveFile(imageFile, 'images', 'image_${newMessage.id}.jpg');
+
+    final updatedMessage = newMessage.copyWith(content: savedPath);
+    emit(state.copyWith(messages: [updatedMessage, ...state.messages]));
+    await saveMessages(state.messages);
   }
 
-  void _onSendDocument(SendDocument event, Emitter<ChatState> emit) {
+  void _onSendDocument(SendDocument event, Emitter<ChatState> emit) async {
     final time = DateFormat('h:mm a').format(DateTime.now());
     final newMessage = ChatMessage(
         content: event.documentPath,
@@ -76,7 +95,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         id: state.messages.length,
         isSender: true,
         timing: time);
-    emit(state.copyWith(messages: [newMessage, ...state.messages]));
+    final documentFile = File(event.documentPath);
+    final savedPath = await saveFile(
+        documentFile, 'documents', 'document_${newMessage.id}.pdf');
+
+    final updatedMessage = newMessage.copyWith(content: savedPath);
+    emit(state.copyWith(messages: [updatedMessage, ...state.messages]));
+
+    await saveMessages(state.messages);
   }
 
   void _onStartRecording(StartRecording event, Emitter<ChatState> emit) async {
@@ -108,23 +134,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         id: state.messages.length,
         isSender: true,
         timing: time,
-        playerController: PlayerController(),
+        //playerController: PlayerController(),
       );
       emit(state.copyWith(messages: [newMessage, ...state.messages]));
+      await saveMessages(state.messages);
     }
   }
 
   void _onPlayVoiceMessage(
       PlayVoiceMessage event, Emitter<ChatState> emit) async {
     final message = state.messages[event.messageId];
-    final playerController = message.playerController!;
+    final playerController = PlayerController();
 
-    // Pause any currently playing message
     if (state.playingMessageId != null &&
         state.playingMessageId != message.id) {
-      final currentPlayingMessage =
-          state.messages.firstWhere((m) => m.id == state.playingMessageId);
-      await currentPlayingMessage.playerController?.pausePlayer();
+      // final currentPlayingMessage =
+      //     state.messages.firstWhere((m) => m.id == state.playingMessageId);
+      await PlayerController().pausePlayer();
       emit(state.copyWith(
         messages: state.messages.map((m) {
           return m.id == state.playingMessageId
@@ -180,8 +206,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _onPauseVoiceMessage(
       PauseVoiceMessage event, Emitter<ChatState> emit) async {
-    final message = state.messages[event.messageId];
-    final playerController = message.playerController!;
+    //final message = state.messages[event.messageId];
+    final playerController = PlayerController();
     await playerController.pausePlayer();
     final updatedMessages = state.messages.map((m) {
       return m.id == event.messageId ? m.copyWith(isPlaying: false) : m;
@@ -209,6 +235,40 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ChatEvent.sendImage(image.path),
       );
     }
+  }
+
+  Future<String> saveFile(File file, String folderName, String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/$folderName';
+
+    await Directory(path).create(recursive: true);
+
+    final filePath = '$path/$fileName';
+    final newFile = await file.copy(filePath);
+    return newFile.path;
+  }
+
+  Future<File> getFile(String folderName, String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/$folderName/$fileName';
+    return File(path);
+  }
+
+  Future<void> saveMessages(List<ChatMessage> messages) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString =
+        jsonEncode(messages.map((message) => message.toJson()).toList());
+    await prefs.setString('messages', jsonString);
+  }
+
+  Future<List<ChatMessage>> loadMessages() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('messages');
+    if (jsonString != null) {
+      final jsonData = jsonDecode(jsonString) as List<dynamic>;
+      return jsonData.map((json) => ChatMessage.fromJson(json)).toList();
+    }
+    return [];
   }
 
   @override

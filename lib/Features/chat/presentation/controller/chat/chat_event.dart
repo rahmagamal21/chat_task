@@ -12,4 +12,6 @@ class ChatEvent with _$ChatEvent {
   const factory ChatEvent.playVoiceMessage(String voicePath, int messageId) =
       PlayVoiceMessage;
   const factory ChatEvent.pauseVoiceMessage(int messageId) = PauseVoiceMessage;
+  const factory ChatEvent.loadMessagesSuccess(
+      List<ChatMessage> loadedMessages) = LoadMessagesSuccess;
 }

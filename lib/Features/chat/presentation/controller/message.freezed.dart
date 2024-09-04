@@ -14,15 +14,22 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+ChatMessage _$ChatMessageFromJson(Map<String, dynamic> json) {
+  return _ChatMessage.fromJson(json);
+}
+
 /// @nodoc
 mixin _$ChatMessage {
   int get id => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
   MessageType get type => throw _privateConstructorUsedError;
   bool get isSender => throw _privateConstructorUsedError;
-  String get timing => throw _privateConstructorUsedError;
-  PlayerController? get playerController => throw _privateConstructorUsedError;
+  String get timing =>
+      throw _privateConstructorUsedError; //@Default(null) PlayerController? playerController,
   bool get isPlaying => throw _privateConstructorUsedError;
+
+  /// Serializes this ChatMessage to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -43,7 +50,6 @@ abstract class $ChatMessageCopyWith<$Res> {
       MessageType type,
       bool isSender,
       String timing,
-      PlayerController? playerController,
       bool isPlaying});
 }
 
@@ -67,7 +73,6 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
-    Object? playerController = freezed,
     Object? isPlaying = null,
   }) {
     return _then(_value.copyWith(
@@ -91,10 +96,6 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
-      playerController: freezed == playerController
-          ? _value.playerController
-          : playerController // ignore: cast_nullable_to_non_nullable
-              as PlayerController?,
       isPlaying: null == isPlaying
           ? _value.isPlaying
           : isPlaying // ignore: cast_nullable_to_non_nullable
@@ -104,11 +105,11 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
 }
 
 /// @nodoc
-abstract class _$$MessageImplCopyWith<$Res>
+abstract class _$$ChatMessageImplCopyWith<$Res>
     implements $ChatMessageCopyWith<$Res> {
-  factory _$$MessageImplCopyWith(
-          _$MessageImpl value, $Res Function(_$MessageImpl) then) =
-      __$$MessageImplCopyWithImpl<$Res>;
+  factory _$$ChatMessageImplCopyWith(
+          _$ChatMessageImpl value, $Res Function(_$ChatMessageImpl) then) =
+      __$$ChatMessageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -117,16 +118,15 @@ abstract class _$$MessageImplCopyWith<$Res>
       MessageType type,
       bool isSender,
       String timing,
-      PlayerController? playerController,
       bool isPlaying});
 }
 
 /// @nodoc
-class __$$MessageImplCopyWithImpl<$Res>
-    extends _$ChatMessageCopyWithImpl<$Res, _$MessageImpl>
-    implements _$$MessageImplCopyWith<$Res> {
-  __$$MessageImplCopyWithImpl(
-      _$MessageImpl _value, $Res Function(_$MessageImpl) _then)
+class __$$ChatMessageImplCopyWithImpl<$Res>
+    extends _$ChatMessageCopyWithImpl<$Res, _$ChatMessageImpl>
+    implements _$$ChatMessageImplCopyWith<$Res> {
+  __$$ChatMessageImplCopyWithImpl(
+      _$ChatMessageImpl _value, $Res Function(_$ChatMessageImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of ChatMessage
@@ -139,10 +139,9 @@ class __$$MessageImplCopyWithImpl<$Res>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
-    Object? playerController = freezed,
     Object? isPlaying = null,
   }) {
-    return _then(_$MessageImpl(
+    return _then(_$ChatMessageImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -163,10 +162,6 @@ class __$$MessageImplCopyWithImpl<$Res>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
-      playerController: freezed == playerController
-          ? _value.playerController
-          : playerController // ignore: cast_nullable_to_non_nullable
-              as PlayerController?,
       isPlaying: null == isPlaying
           ? _value.isPlaying
           : isPlaying // ignore: cast_nullable_to_non_nullable
@@ -176,16 +171,18 @@ class __$$MessageImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$MessageImpl implements _Message {
-  const _$MessageImpl(
+@JsonSerializable()
+class _$ChatMessageImpl implements _ChatMessage {
+  const _$ChatMessageImpl(
       {required this.id,
       required this.content,
       required this.type,
       required this.isSender,
       required this.timing,
-      this.playerController = null,
       this.isPlaying = false});
+
+  factory _$ChatMessageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ChatMessageImplFromJson(json);
 
   @override
   final int id;
@@ -197,57 +194,63 @@ class _$MessageImpl implements _Message {
   final bool isSender;
   @override
   final String timing;
-  @override
-  @JsonKey()
-  final PlayerController? playerController;
+//@Default(null) PlayerController? playerController,
   @override
   @JsonKey()
   final bool isPlaying;
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, playerController: $playerController, isPlaying: $isPlaying)';
+    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, isPlaying: $isPlaying)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MessageImpl &&
+            other is _$ChatMessageImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.isSender, isSender) ||
                 other.isSender == isSender) &&
             (identical(other.timing, timing) || other.timing == timing) &&
-            (identical(other.playerController, playerController) ||
-                other.playerController == playerController) &&
             (identical(other.isPlaying, isPlaying) ||
                 other.isPlaying == isPlaying));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, content, type, isSender,
-      timing, playerController, isPlaying);
+  int get hashCode =>
+      Object.hash(runtimeType, id, content, type, isSender, timing, isPlaying);
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$MessageImplCopyWith<_$MessageImpl> get copyWith =>
-      __$$MessageImplCopyWithImpl<_$MessageImpl>(this, _$identity);
+  _$$ChatMessageImplCopyWith<_$ChatMessageImpl> get copyWith =>
+      __$$ChatMessageImplCopyWithImpl<_$ChatMessageImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ChatMessageImplToJson(
+      this,
+    );
+  }
 }
 
-abstract class _Message implements ChatMessage {
-  const factory _Message(
+abstract class _ChatMessage implements ChatMessage {
+  const factory _ChatMessage(
       {required final int id,
       required final String content,
       required final MessageType type,
       required final bool isSender,
       required final String timing,
-      final PlayerController? playerController,
-      final bool isPlaying}) = _$MessageImpl;
+      final bool isPlaying}) = _$ChatMessageImpl;
+
+  factory _ChatMessage.fromJson(Map<String, dynamic> json) =
+      _$ChatMessageImpl.fromJson;
 
   @override
   int get id;
@@ -258,9 +261,7 @@ abstract class _Message implements ChatMessage {
   @override
   bool get isSender;
   @override
-  String get timing;
-  @override
-  PlayerController? get playerController;
+  String get timing; //@Default(null) PlayerController? playerController,
   @override
   bool get isPlaying;
 
@@ -268,6 +269,6 @@ abstract class _Message implements ChatMessage {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MessageImplCopyWith<_$MessageImpl> get copyWith =>
+  _$$ChatMessageImplCopyWith<_$ChatMessageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
