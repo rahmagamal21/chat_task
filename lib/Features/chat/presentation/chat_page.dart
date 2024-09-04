@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/chat_header.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/input_field.dart';
@@ -6,6 +9,7 @@ import 'package:chat_task/core/common/res/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import 'controller/chat/chat_bloc.dart';
 import 'controller/message.dart';
@@ -15,6 +19,8 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final time = DateFormat('h:mm a').format(now);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -42,13 +48,46 @@ class ChatPage extends StatelessWidget {
                   Expanded(
                     child: BlocBuilder<ChatBloc, ChatState>(
                       builder: (context, state) {
-                        return ListView.builder(
+                        return ListView.separated(
                           shrinkWrap: true,
                           reverse: true,
                           itemCount: state.messages.length,
                           itemBuilder: (context, index) {
                             final message = state.messages[index];
-                            return _buildChatBubble(message);
+                            return Row(
+                              children: [
+                                _buildChatBubble(
+                                  message: message,
+                                  isPlaying:
+                                      state.playingMessageId == message.id &&
+                                          state.isPlaying!,
+                                  onPlayPause: (isPlaying) {
+                                    final chatBloc = context.read<ChatBloc>();
+                                    if (isPlaying) {
+                                      chatBloc.add(ChatEvent.pauseVoiceMessage(
+                                          message.id));
+                                    } else {
+                                      chatBloc.add(ChatEvent.playVoiceMessage(
+                                          message.content, message.id));
+                                    }
+                                  },
+                                  playerController:
+                                      context.read<ChatBloc>().playerController,
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  time,
+                                  style: Styles.time(),
+                                ),
+                              ],
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              height: 20.h,
+                            );
                           },
                         );
                       },
@@ -67,21 +106,49 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  Widget _buildChatBubble(ChatMessage message) {
+  Widget _buildChatBubble({
+    required ChatMessage message,
+    required bool isPlaying,
+    required Function(bool) onPlayPause,
+    required PlayerController playerController,
+  }) {
     switch (message.type) {
       case MessageType.text:
-        return BubbleNormal(
-          text: message.content,
-          isSender: message.isSender,
-          color:
-              message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
-          tail: true,
-          textStyle: Styles.messageStyle(),
+        return Container(
+          constraints: BoxConstraints(maxWidth: 263.w, minWidth: 122.w),
+          padding: EdgeInsets.all(15.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomRight: const Radius.circular(10),
+              bottomLeft: const Radius.circular(10),
+              topLeft:
+                  message.isSender ? const Radius.circular(10) : Radius.zero,
+              topRight:
+                  message.isSender ? Radius.zero : const Radius.circular(10),
+            ),
+            color: message.isSender
+                ? AllColors.sendBubble
+                : AllColors.receiveBubble,
+          ),
+          child: Text(
+            message.content,
+            style: Styles.messageStyle(),
+          ),
         );
+      // return BubbleNormal(
+      //   text: message.content,
+      //   isSender: message.isSender,
+      //   color:
+      //       message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
+      //   tail: true,
+      //   textStyle: Styles.messageStyle(),
+      // );
       case MessageType.image:
         return BubbleNormalImage(
           id: message.id.toString(),
-          image: Image.network(message.content),
+          image: Image.file(
+            File(message.content),
+          ), //Image.network(message.content),
           isSender: message.isSender,
         );
       case MessageType.document:
@@ -94,13 +161,32 @@ class ChatPage extends StatelessWidget {
           textStyle: Styles.messageStyle(),
         );
       case MessageType.voice:
-        return BubbleSpecialTwo(
-          text: "Voice Message",
-          isSender: message.isSender,
-          color:
-              message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
-          tail: true,
-          textStyle: Styles.messageStyle(),
+        return Row(
+          mainAxisAlignment: message.isSender
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
+          children: [
+            AudioFileWaveforms(
+              playerController: playerController,
+              size: const Size(200, 50),
+              playerWaveStyle: const PlayerWaveStyle(
+                liveWaveColor: Colors.blue,
+                fixedWaveColor: Colors.grey,
+                spacing: 8.0,
+              ),
+              enableSeekGesture: true,
+              waveformType: WaveformType.long,
+            ),
+            IconButton(
+              icon: Icon(
+                isPlaying ? Icons.pause : Icons.play_arrow,
+                color: Colors.blue,
+              ),
+              onPressed: () {
+                onPlayPause(isPlaying);
+              },
+            ),
+          ],
         );
       default:
         return const SizedBox();

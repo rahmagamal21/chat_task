@@ -6,12 +6,16 @@ class ChatState with _$ChatState {
     required List<ChatMessage> messages,
     required bool isRecording,
     required int recordingTime,
+    int? playingMessageId,
+    bool? isPlaying,
   }) = _ChatState;
 
   factory ChatState.initial() => const ChatState(
         messages: [],
         isRecording: false,
         recordingTime: 180,
+        playingMessageId: null,
+        isPlaying: false,
       );
   // const factory ChatState.initial() = _Initial;
   // const factory ChatState.loading() = _Loading;

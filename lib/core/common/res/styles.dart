@@ -1,3 +1,4 @@
+import 'package:chat_task/core/common/res/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,5 +22,9 @@ class Styles {
     return baseStyle.copyWith(
       fontSize: 10.sp,
     );
+  }
+
+  static TextStyle time() {
+    return baseStyle.copyWith(fontSize: 10.sp, color: AllColors.lightBlue);
   }
 }

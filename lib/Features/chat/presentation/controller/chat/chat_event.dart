@@ -6,6 +6,10 @@ class ChatEvent with _$ChatEvent {
   const factory ChatEvent.sendImage(String imagePath) = SendImage;
   const factory ChatEvent.sendDocument(String documentPath) = SendDocument;
   const factory ChatEvent.startRecording() = StartRecording;
-  const factory ChatEvent.sendVoiceRecording(String voicePath) =
-      SendVoiceRecording;
+  const factory ChatEvent.recordingCountDown(int secondsRemainin) =
+      RecordingCountDown;
+  const factory ChatEvent.sendVoiceRecording() = SendVoiceRecording;
+  const factory ChatEvent.playVoiceMessage(String voicePath, int messageId) =
+      PlayVoiceMessage;
+  const factory ChatEvent.pauseVoiceMessage(int messageId) = PauseVoiceMessage;
 }
