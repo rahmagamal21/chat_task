@@ -97,7 +97,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         timing: time);
     final documentFile = File(event.documentPath);
     final savedPath = await saveFile(
-        documentFile, 'documents', 'document_${newMessage.id}.pdf');
+        documentFile, 'documents', documentFile.path.split('/').last);
 
     final updatedMessage = newMessage.copyWith(content: savedPath);
     emit(state.copyWith(messages: [updatedMessage, ...state.messages]));
@@ -225,7 +225,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (result != null) {
       add(ChatEvent.sendDocument(result.files.first.path!));
     }
-    
   }
 
   Future<void> pickImage() async {
