@@ -21,6 +21,8 @@ mixin _$ChatMessage {
   MessageType get type => throw _privateConstructorUsedError;
   bool get isSender => throw _privateConstructorUsedError;
   String get timing => throw _privateConstructorUsedError;
+  PlayerController? get playerController => throw _privateConstructorUsedError;
+  bool get isPlaying => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -36,7 +38,13 @@ abstract class $ChatMessageCopyWith<$Res> {
       _$ChatMessageCopyWithImpl<$Res, ChatMessage>;
   @useResult
   $Res call(
-      {int id, String content, MessageType type, bool isSender, String timing});
+      {int id,
+      String content,
+      MessageType type,
+      bool isSender,
+      String timing,
+      PlayerController? playerController,
+      bool isPlaying});
 }
 
 /// @nodoc
@@ -59,6 +67,8 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
+    Object? playerController = freezed,
+    Object? isPlaying = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -81,6 +91,14 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
+      playerController: freezed == playerController
+          ? _value.playerController
+          : playerController // ignore: cast_nullable_to_non_nullable
+              as PlayerController?,
+      isPlaying: null == isPlaying
+          ? _value.isPlaying
+          : isPlaying // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -94,7 +112,13 @@ abstract class _$$MessageImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id, String content, MessageType type, bool isSender, String timing});
+      {int id,
+      String content,
+      MessageType type,
+      bool isSender,
+      String timing,
+      PlayerController? playerController,
+      bool isPlaying});
 }
 
 /// @nodoc
@@ -115,6 +139,8 @@ class __$$MessageImplCopyWithImpl<$Res>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
+    Object? playerController = freezed,
+    Object? isPlaying = null,
   }) {
     return _then(_$MessageImpl(
       id: null == id
@@ -137,6 +163,14 @@ class __$$MessageImplCopyWithImpl<$Res>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
+      playerController: freezed == playerController
+          ? _value.playerController
+          : playerController // ignore: cast_nullable_to_non_nullable
+              as PlayerController?,
+      isPlaying: null == isPlaying
+          ? _value.isPlaying
+          : isPlaying // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -149,7 +183,9 @@ class _$MessageImpl implements _Message {
       required this.content,
       required this.type,
       required this.isSender,
-      required this.timing});
+      required this.timing,
+      this.playerController = null,
+      this.isPlaying = false});
 
   @override
   final int id;
@@ -161,10 +197,16 @@ class _$MessageImpl implements _Message {
   final bool isSender;
   @override
   final String timing;
+  @override
+  @JsonKey()
+  final PlayerController? playerController;
+  @override
+  @JsonKey()
+  final bool isPlaying;
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing)';
+    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, playerController: $playerController, isPlaying: $isPlaying)';
   }
 
   @override
@@ -177,12 +219,16 @@ class _$MessageImpl implements _Message {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.isSender, isSender) ||
                 other.isSender == isSender) &&
-            (identical(other.timing, timing) || other.timing == timing));
+            (identical(other.timing, timing) || other.timing == timing) &&
+            (identical(other.playerController, playerController) ||
+                other.playerController == playerController) &&
+            (identical(other.isPlaying, isPlaying) ||
+                other.isPlaying == isPlaying));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, content, type, isSender, timing);
+  int get hashCode => Object.hash(runtimeType, id, content, type, isSender,
+      timing, playerController, isPlaying);
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -199,7 +245,9 @@ abstract class _Message implements ChatMessage {
       required final String content,
       required final MessageType type,
       required final bool isSender,
-      required final String timing}) = _$MessageImpl;
+      required final String timing,
+      final PlayerController? playerController,
+      final bool isPlaying}) = _$MessageImpl;
 
   @override
   int get id;
@@ -211,6 +259,10 @@ abstract class _Message implements ChatMessage {
   bool get isSender;
   @override
   String get timing;
+  @override
+  PlayerController? get playerController;
+  @override
+  bool get isPlaying;
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.

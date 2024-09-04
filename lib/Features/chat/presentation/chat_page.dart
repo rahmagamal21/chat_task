@@ -55,21 +55,7 @@ class ChatPage extends StatelessWidget {
                               children: [
                                 _buildChatBubble(
                                   message: message,
-                                  isPlaying:
-                                      state.playingMessageId == message.id &&
-                                          state.isPlaying!,
-                                  onPlayPause: (isPlaying) {
-                                    final chatBloc = context.read<ChatBloc>();
-                                    if (isPlaying) {
-                                      chatBloc.add(ChatEvent.pauseVoiceMessage(
-                                          message.id));
-                                    } else {
-                                      chatBloc.add(ChatEvent.playVoiceMessage(
-                                          message.content, message.id));
-                                    }
-                                  },
-                                  playerController:
-                                      context.read<ChatBloc>().playerController,
+                                  context: context,
                                 ),
                                 SizedBox(
                                   width: 10.w,
@@ -105,9 +91,9 @@ class ChatPage extends StatelessWidget {
 
   Widget _buildChatBubble({
     required ChatMessage message,
-    required bool isPlaying,
-    required Function(bool) onPlayPause,
-    required PlayerController playerController,
+    required BuildContext context,
+    //required bool isPlaying,
+    // required Function(bool) onPlayPause,
   }) {
     switch (message.type) {
       case MessageType.text:
@@ -141,13 +127,34 @@ class ChatPage extends StatelessWidget {
       //   textStyle: Styles.messageStyle(),
       // );
       case MessageType.image:
-        return BubbleNormalImage(
-          id: message.id.toString(),
-          image: Image.file(
+        return Container(
+          constraints: BoxConstraints(maxWidth: 263.w, minWidth: 122.w),
+          padding: EdgeInsets.all(5.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomRight: const Radius.circular(10),
+              bottomLeft: const Radius.circular(10),
+              topLeft:
+                  message.isSender ? const Radius.circular(10) : Radius.zero,
+              topRight:
+                  message.isSender ? Radius.zero : const Radius.circular(10),
+            ),
+            color: message.isSender
+                ? AllColors.sendBubble
+                : AllColors.receiveBubble,
+          ),
+          child: Image.file(
             File(message.content),
-          ), //Image.network(message.content),
-          isSender: message.isSender,
+            fit: BoxFit.cover,
+          ),
         );
+      // return BubbleNormalImage(
+      //   id: message.id.toString(),
+      //   image: Image.file(
+      //     File(message.content),
+      //   ), //Image.network(message.content),
+      //   isSender: message.isSender,
+      // );
       case MessageType.document:
         return BubbleSpecialThree(
           text: "📄 ${message.content}",
@@ -180,23 +187,29 @@ class ChatPage extends StatelessWidget {
                 : MainAxisAlignment.start,
             children: [
               AudioFileWaveforms(
-                playerController: playerController,
-                size: const Size(200, 50),
+                playerController: message.playerController!,
+                size: Size(200.w, 40.h),
                 playerWaveStyle: const PlayerWaveStyle(
-                  liveWaveColor: Colors.blue,
-                  fixedWaveColor: Colors.grey,
-                  spacing: 8.0,
-                ),
+                    liveWaveColor: Colors.blue,
+                    fixedWaveColor: Colors.grey,
+                    spacing: 8.0,
+                    showSeekLine: false),
                 enableSeekGesture: true,
                 waveformType: WaveformType.long,
               ),
               GestureDetector(
                 child: Icon(
-                  isPlaying ? Icons.pause : Icons.play_arrow,
+                  message.isPlaying ? Icons.pause : Icons.play_arrow,
                   color: Colors.blue,
                 ),
                 onTap: () {
-                  onPlayPause(isPlaying);
+                  final chatBloc = context.read<ChatBloc>();
+                  if (message.isPlaying) {
+                    chatBloc.add(ChatEvent.pauseVoiceMessage(message.id));
+                  } else {
+                    chatBloc.add(ChatEvent.playVoiceMessage(
+                        message.content, message.id));
+                  }
                 },
               ),
             ],

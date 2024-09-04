@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'message.freezed.dart';
@@ -12,5 +13,7 @@ class ChatMessage with _$ChatMessage {
     required MessageType type,
     required bool isSender,
     required String timing,
+    @Default(null) PlayerController? playerController,
+    @Default(false) bool isPlaying,
   }) = _Message;
 }
