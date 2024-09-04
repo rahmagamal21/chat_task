@@ -24,7 +24,9 @@ mixin _$ChatMessage {
   String get content => throw _privateConstructorUsedError;
   MessageType get type => throw _privateConstructorUsedError;
   bool get isSender => throw _privateConstructorUsedError;
-  String get timing =>
+  String get timing => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  PlayerController? get playerController =>
       throw _privateConstructorUsedError; //@Default(null) PlayerController? playerController,
   bool get isPlaying => throw _privateConstructorUsedError;
 
@@ -50,6 +52,7 @@ abstract class $ChatMessageCopyWith<$Res> {
       MessageType type,
       bool isSender,
       String timing,
+      @JsonKey(ignore: true) PlayerController? playerController,
       bool isPlaying});
 }
 
@@ -73,6 +76,7 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
+    Object? playerController = freezed,
     Object? isPlaying = null,
   }) {
     return _then(_value.copyWith(
@@ -96,6 +100,10 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
+      playerController: freezed == playerController
+          ? _value.playerController
+          : playerController // ignore: cast_nullable_to_non_nullable
+              as PlayerController?,
       isPlaying: null == isPlaying
           ? _value.isPlaying
           : isPlaying // ignore: cast_nullable_to_non_nullable
@@ -118,6 +126,7 @@ abstract class _$$ChatMessageImplCopyWith<$Res>
       MessageType type,
       bool isSender,
       String timing,
+      @JsonKey(ignore: true) PlayerController? playerController,
       bool isPlaying});
 }
 
@@ -139,6 +148,7 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
+    Object? playerController = freezed,
     Object? isPlaying = null,
   }) {
     return _then(_$ChatMessageImpl(
@@ -162,6 +172,10 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
+      playerController: freezed == playerController
+          ? _value.playerController
+          : playerController // ignore: cast_nullable_to_non_nullable
+              as PlayerController?,
       isPlaying: null == isPlaying
           ? _value.isPlaying
           : isPlaying // ignore: cast_nullable_to_non_nullable
@@ -179,6 +193,7 @@ class _$ChatMessageImpl implements _ChatMessage {
       required this.type,
       required this.isSender,
       required this.timing,
+      @JsonKey(ignore: true) this.playerController,
       this.isPlaying = false});
 
   factory _$ChatMessageImpl.fromJson(Map<String, dynamic> json) =>
@@ -194,6 +209,9 @@ class _$ChatMessageImpl implements _ChatMessage {
   final bool isSender;
   @override
   final String timing;
+  @override
+  @JsonKey(ignore: true)
+  final PlayerController? playerController;
 //@Default(null) PlayerController? playerController,
   @override
   @JsonKey()
@@ -201,7 +219,7 @@ class _$ChatMessageImpl implements _ChatMessage {
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, isPlaying: $isPlaying)';
+    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, playerController: $playerController, isPlaying: $isPlaying)';
   }
 
   @override
@@ -215,14 +233,16 @@ class _$ChatMessageImpl implements _ChatMessage {
             (identical(other.isSender, isSender) ||
                 other.isSender == isSender) &&
             (identical(other.timing, timing) || other.timing == timing) &&
+            (identical(other.playerController, playerController) ||
+                other.playerController == playerController) &&
             (identical(other.isPlaying, isPlaying) ||
                 other.isPlaying == isPlaying));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, content, type, isSender, timing, isPlaying);
+  int get hashCode => Object.hash(runtimeType, id, content, type, isSender,
+      timing, playerController, isPlaying);
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -247,6 +267,7 @@ abstract class _ChatMessage implements ChatMessage {
       required final MessageType type,
       required final bool isSender,
       required final String timing,
+      @JsonKey(ignore: true) final PlayerController? playerController,
       final bool isPlaying}) = _$ChatMessageImpl;
 
   factory _ChatMessage.fromJson(Map<String, dynamic> json) =
@@ -261,7 +282,11 @@ abstract class _ChatMessage implements ChatMessage {
   @override
   bool get isSender;
   @override
-  String get timing; //@Default(null) PlayerController? playerController,
+  String get timing;
+  @override
+  @JsonKey(ignore: true)
+  PlayerController?
+      get playerController; //@Default(null) PlayerController? playerController,
   @override
   bool get isPlaying;
 

@@ -22,7 +22,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   TextEditingController controller = TextEditingController();
   final RecorderController recorderController = RecorderController();
   Timer? _recordingTimer;
-  // int? _currentPlayingMessageId;
+// int? _currentPlayingMessageId;
 
   ChatBloc() : super(ChatState.initial()) {
     on<SendMessage>(_onSendMessage);
@@ -40,7 +40,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ));
     _loadMessages();
 
-    // Listen to player events
     // playerController.onCompletion.listen((_) {
     //   if (_currentPlayingMessageId != null) {
     //     add(ChatEvent.pauseVoiceMessage(_currentPlayingMessageId!));
@@ -134,7 +133,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         id: state.messages.length,
         isSender: true,
         timing: time,
-        //playerController: PlayerController(),
+        playerController: PlayerController(),
       );
       emit(state.copyWith(messages: [newMessage, ...state.messages]));
       await saveMessages(state.messages);
@@ -144,13 +143,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _onPlayVoiceMessage(
       PlayVoiceMessage event, Emitter<ChatState> emit) async {
     final message = state.messages[event.messageId];
-    final playerController = PlayerController();
 
     if (state.playingMessageId != null &&
         state.playingMessageId != message.id) {
-      // final currentPlayingMessage =
-      //     state.messages.firstWhere((m) => m.id == state.playingMessageId);
-      await PlayerController().pausePlayer();
+      final currentlyPlayingMessage = state.messages[state.playingMessageId!];
+      await currentlyPlayingMessage.playerController?.pausePlayer();
       emit(state.copyWith(
         messages: state.messages.map((m) {
           return m.id == state.playingMessageId
@@ -161,63 +158,43 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ));
     }
 
-    await playerController.preparePlayer(path: message.content);
-    await playerController.startPlayer();
+    final playerController = message.playerController;
+    if (playerController != null) {
+      await playerController.preparePlayer(
+        path: message.content,
+        shouldExtractWaveform: true,
+        noOfSamples: 100,
+        volume: 1.0,
+      );
+      await playerController.startPlayer(finishMode: FinishMode.stop);
 
-    playerController.onCompletion.listen((_) {
-      add(PauseVoiceMessage(message.id));
-    });
+      playerController.onCompletion.listen((_) {
+        add(PauseVoiceMessage(message.id));
+      });
 
-    final updatedMessages = state.messages.map((m) {
-      return m.id == event.messageId
-          ? m.copyWith(isPlaying: true)
-          : m.copyWith(isPlaying: false);
-    }).toList();
+      final updatedMessages = state.messages.map((m) {
+        return m.id == event.messageId
+            ? m.copyWith(isPlaying: true)
+            : m.copyWith(isPlaying: false);
+      }).toList();
 
-    emit(state.copyWith(
-      messages: updatedMessages,
-      playingMessageId: event.messageId,
-    ));
-    // final message = state.messages[event.messageId];
-    // final playerController = message.playerController!;
-
-    // await playerController.preparePlayer(path: message.content);
-    // await playerController.startPlayer();
-
-    // final updatedMessages = state.messages.map((m) {
-    //   return m.id == event.messageId
-    //       ? m.copyWith(isPlaying: true)
-    //       : m.copyWith(isPlaying: false);
-    // }).toList();
-
-    // emit(state.copyWith(
-    //     messages: updatedMessages, playingMessageId: event.messageId));
-
-    // if (_currentPlayingMessageId != null &&
-    //     _currentPlayingMessageId != event.messageId) {
-    //   await playerController.pausePlayer();
-    //   add(ChatEvent.pauseVoiceMessage(_currentPlayingMessageId!));
-    // }
-    // await playerController.preparePlayer(path: event.voicePath);
-    // await playerController.startPlayer();
-    // _currentPlayingMessageId = event.messageId;
-    // emit(state.copyWith(playingMessageId: event.messageId, isPlaying: true));
+      emit(state.copyWith(
+        messages: updatedMessages,
+        playingMessageId: event.messageId,
+      ));
+    }
   }
 
   void _onPauseVoiceMessage(
       PauseVoiceMessage event, Emitter<ChatState> emit) async {
-    //final message = state.messages[event.messageId];
-    final playerController = PlayerController();
-    await playerController.pausePlayer();
+    final message = state.messages[event.messageId];
+    await message.playerController?.pausePlayer();
+
     final updatedMessages = state.messages.map((m) {
       return m.id == event.messageId ? m.copyWith(isPlaying: false) : m;
     }).toList();
 
     emit(state.copyWith(messages: updatedMessages, playingMessageId: null));
-    // if (_currentPlayingMessageId == event.messageId) {
-    //   _currentPlayingMessageId = null;
-    // }
-    // emit(state.copyWith(playingMessageId: null, isPlaying: false));
   }
 
   Future<void> pickFile() async {
@@ -304,7 +281,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   @override
   Future<void> close() {
-    //playerController.dispose();
     recorderController.dispose();
     controller.dispose();
     _recordingTimer?.cancel();

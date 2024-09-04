@@ -14,11 +14,9 @@ class ChatBubble extends StatelessWidget {
   const ChatBubble({
     super.key,
     required this.message,
-    required this.playerController,
   });
 
   final ChatMessage message;
-  final PlayerController playerController;
 
   Future<int> getFileSize(String filePath) async {
     final file = File(filePath);
@@ -130,7 +128,7 @@ class ChatBubble extends StatelessWidget {
               : MainAxisAlignment.start,
           children: [
             AudioFileWaveforms(
-              playerController: playerController,
+              playerController: message.playerController!,
               size: Size(200.w, 40.h),
               playerWaveStyle: const PlayerWaveStyle(
                   liveWaveColor: Colors.blue,

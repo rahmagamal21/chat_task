@@ -1,4 +1,3 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/chat_bubble.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/chat_header.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/input_field.dart';
@@ -53,7 +52,6 @@ class ChatPage extends StatelessWidget {
                                     children: [
                                       ChatBubble(
                                         message: message,
-                                        playerController: PlayerController(),
                                       ),
                                       // _buildChatBubble(
                                       //   message: message,
