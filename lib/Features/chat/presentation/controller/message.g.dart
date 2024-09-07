@@ -14,6 +14,12 @@ _$ChatMessageImpl _$$ChatMessageImplFromJson(Map<String, dynamic> json) =>
       isSender: json['isSender'] as bool,
       timing: json['timing'] as String,
       isPlaying: json['isPlaying'] as bool? ?? false,
+      currentPosition: json['currentPosition'] == null
+          ? Duration.zero
+          : Duration(microseconds: (json['currentPosition'] as num).toInt()),
+      totalDuration: json['totalDuration'] == null
+          ? Duration.zero
+          : Duration(microseconds: (json['totalDuration'] as num).toInt()),
     );
 
 Map<String, dynamic> _$$ChatMessageImplToJson(_$ChatMessageImpl instance) =>
@@ -24,6 +30,8 @@ Map<String, dynamic> _$$ChatMessageImplToJson(_$ChatMessageImpl instance) =>
       'isSender': instance.isSender,
       'timing': instance.timing,
       'isPlaying': instance.isPlaying,
+      'currentPosition': instance.currentPosition.inMicroseconds,
+      'totalDuration': instance.totalDuration.inMicroseconds,
     };
 
 const _$MessageTypeEnumMap = {

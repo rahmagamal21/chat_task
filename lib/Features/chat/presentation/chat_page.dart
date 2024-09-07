@@ -44,6 +44,7 @@ class ChatPage extends StatelessWidget {
                         return ListView.separated(
                           shrinkWrap: true,
                           reverse: true,
+                          // physics: const ClampingScrollPhysics(),
                           itemCount: state.messages.length,
                           itemBuilder: (context, index) {
                             final message = state.messages[index];

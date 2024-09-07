@@ -1,4 +1,3 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'message.freezed.dart';
@@ -14,9 +13,13 @@ class ChatMessage with _$ChatMessage {
     required MessageType type,
     required bool isSender,
     required String timing,
-    @JsonKey(ignore: true) PlayerController? playerController,
+
+    // @JsonKey(ignore: true) AudioPlayer? audioPlayer,
     //@Default(null) PlayerController? playerController,
-    @Default(false) bool isPlaying,
+    @Default(false) bool isPlaying, // To track if the message is playing
+    @Default(Duration.zero)
+    Duration currentPosition, // To track the current play position
+    @Default(Duration.zero) Duration totalDuration,
   }) = _ChatMessage;
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) =>

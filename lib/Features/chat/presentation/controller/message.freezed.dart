@@ -24,11 +24,14 @@ mixin _$ChatMessage {
   String get content => throw _privateConstructorUsedError;
   MessageType get type => throw _privateConstructorUsedError;
   bool get isSender => throw _privateConstructorUsedError;
-  String get timing => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  PlayerController? get playerController =>
-      throw _privateConstructorUsedError; //@Default(null) PlayerController? playerController,
-  bool get isPlaying => throw _privateConstructorUsedError;
+  String get timing =>
+      throw _privateConstructorUsedError; // @JsonKey(ignore: true) AudioPlayer? audioPlayer,
+//@Default(null) PlayerController? playerController,
+  bool get isPlaying =>
+      throw _privateConstructorUsedError; // To track if the message is playing
+  Duration get currentPosition =>
+      throw _privateConstructorUsedError; // To track the current play position
+  Duration get totalDuration => throw _privateConstructorUsedError;
 
   /// Serializes this ChatMessage to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,8 +55,9 @@ abstract class $ChatMessageCopyWith<$Res> {
       MessageType type,
       bool isSender,
       String timing,
-      @JsonKey(ignore: true) PlayerController? playerController,
-      bool isPlaying});
+      bool isPlaying,
+      Duration currentPosition,
+      Duration totalDuration});
 }
 
 /// @nodoc
@@ -76,8 +80,9 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
-    Object? playerController = freezed,
     Object? isPlaying = null,
+    Object? currentPosition = null,
+    Object? totalDuration = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -100,14 +105,18 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
-      playerController: freezed == playerController
-          ? _value.playerController
-          : playerController // ignore: cast_nullable_to_non_nullable
-              as PlayerController?,
       isPlaying: null == isPlaying
           ? _value.isPlaying
           : isPlaying // ignore: cast_nullable_to_non_nullable
               as bool,
+      currentPosition: null == currentPosition
+          ? _value.currentPosition
+          : currentPosition // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      totalDuration: null == totalDuration
+          ? _value.totalDuration
+          : totalDuration // ignore: cast_nullable_to_non_nullable
+              as Duration,
     ) as $Val);
   }
 }
@@ -126,8 +135,9 @@ abstract class _$$ChatMessageImplCopyWith<$Res>
       MessageType type,
       bool isSender,
       String timing,
-      @JsonKey(ignore: true) PlayerController? playerController,
-      bool isPlaying});
+      bool isPlaying,
+      Duration currentPosition,
+      Duration totalDuration});
 }
 
 /// @nodoc
@@ -148,8 +158,9 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
     Object? type = null,
     Object? isSender = null,
     Object? timing = null,
-    Object? playerController = freezed,
     Object? isPlaying = null,
+    Object? currentPosition = null,
+    Object? totalDuration = null,
   }) {
     return _then(_$ChatMessageImpl(
       id: null == id
@@ -172,14 +183,18 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
           ? _value.timing
           : timing // ignore: cast_nullable_to_non_nullable
               as String,
-      playerController: freezed == playerController
-          ? _value.playerController
-          : playerController // ignore: cast_nullable_to_non_nullable
-              as PlayerController?,
       isPlaying: null == isPlaying
           ? _value.isPlaying
           : isPlaying // ignore: cast_nullable_to_non_nullable
               as bool,
+      currentPosition: null == currentPosition
+          ? _value.currentPosition
+          : currentPosition // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      totalDuration: null == totalDuration
+          ? _value.totalDuration
+          : totalDuration // ignore: cast_nullable_to_non_nullable
+              as Duration,
     ));
   }
 }
@@ -193,8 +208,9 @@ class _$ChatMessageImpl implements _ChatMessage {
       required this.type,
       required this.isSender,
       required this.timing,
-      @JsonKey(ignore: true) this.playerController,
-      this.isPlaying = false});
+      this.isPlaying = false,
+      this.currentPosition = Duration.zero,
+      this.totalDuration = Duration.zero});
 
   factory _$ChatMessageImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatMessageImplFromJson(json);
@@ -209,17 +225,23 @@ class _$ChatMessageImpl implements _ChatMessage {
   final bool isSender;
   @override
   final String timing;
-  @override
-  @JsonKey(ignore: true)
-  final PlayerController? playerController;
+// @JsonKey(ignore: true) AudioPlayer? audioPlayer,
 //@Default(null) PlayerController? playerController,
   @override
   @JsonKey()
   final bool isPlaying;
+// To track if the message is playing
+  @override
+  @JsonKey()
+  final Duration currentPosition;
+// To track the current play position
+  @override
+  @JsonKey()
+  final Duration totalDuration;
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, playerController: $playerController, isPlaying: $isPlaying)';
+    return 'ChatMessage(id: $id, content: $content, type: $type, isSender: $isSender, timing: $timing, isPlaying: $isPlaying, currentPosition: $currentPosition, totalDuration: $totalDuration)';
   }
 
   @override
@@ -233,16 +255,18 @@ class _$ChatMessageImpl implements _ChatMessage {
             (identical(other.isSender, isSender) ||
                 other.isSender == isSender) &&
             (identical(other.timing, timing) || other.timing == timing) &&
-            (identical(other.playerController, playerController) ||
-                other.playerController == playerController) &&
             (identical(other.isPlaying, isPlaying) ||
-                other.isPlaying == isPlaying));
+                other.isPlaying == isPlaying) &&
+            (identical(other.currentPosition, currentPosition) ||
+                other.currentPosition == currentPosition) &&
+            (identical(other.totalDuration, totalDuration) ||
+                other.totalDuration == totalDuration));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, content, type, isSender,
-      timing, playerController, isPlaying);
+      timing, isPlaying, currentPosition, totalDuration);
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.
@@ -267,8 +291,9 @@ abstract class _ChatMessage implements ChatMessage {
       required final MessageType type,
       required final bool isSender,
       required final String timing,
-      @JsonKey(ignore: true) final PlayerController? playerController,
-      final bool isPlaying}) = _$ChatMessageImpl;
+      final bool isPlaying,
+      final Duration currentPosition,
+      final Duration totalDuration}) = _$ChatMessageImpl;
 
   factory _ChatMessage.fromJson(Map<String, dynamic> json) =
       _$ChatMessageImpl.fromJson;
@@ -282,13 +307,14 @@ abstract class _ChatMessage implements ChatMessage {
   @override
   bool get isSender;
   @override
-  String get timing;
+  String get timing; // @JsonKey(ignore: true) AudioPlayer? audioPlayer,
+//@Default(null) PlayerController? playerController,
   @override
-  @JsonKey(ignore: true)
-  PlayerController?
-      get playerController; //@Default(null) PlayerController? playerController,
+  bool get isPlaying; // To track if the message is playing
   @override
-  bool get isPlaying;
+  Duration get currentPosition; // To track the current play position
+  @override
+  Duration get totalDuration;
 
   /// Create a copy of ChatMessage
   /// with the given fields replaced by the non-null parameter values.

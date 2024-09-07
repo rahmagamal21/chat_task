@@ -19,6 +19,8 @@ mixin _$ChatState {
   List<ChatMessage> get messages => throw _privateConstructorUsedError;
   bool get isRecording => throw _privateConstructorUsedError;
   int get recordingTime => throw _privateConstructorUsedError;
+  double? get currentPosition => throw _privateConstructorUsedError;
+  double? get totalDuration => throw _privateConstructorUsedError;
   int? get playingMessageId => throw _privateConstructorUsedError;
   bool? get isPlaying => throw _privateConstructorUsedError;
 
@@ -38,6 +40,8 @@ abstract class $ChatStateCopyWith<$Res> {
       {List<ChatMessage> messages,
       bool isRecording,
       int recordingTime,
+      double? currentPosition,
+      double? totalDuration,
       int? playingMessageId,
       bool? isPlaying});
 }
@@ -60,6 +64,8 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? messages = null,
     Object? isRecording = null,
     Object? recordingTime = null,
+    Object? currentPosition = freezed,
+    Object? totalDuration = freezed,
     Object? playingMessageId = freezed,
     Object? isPlaying = freezed,
   }) {
@@ -76,6 +82,14 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
           ? _value.recordingTime
           : recordingTime // ignore: cast_nullable_to_non_nullable
               as int,
+      currentPosition: freezed == currentPosition
+          ? _value.currentPosition
+          : currentPosition // ignore: cast_nullable_to_non_nullable
+              as double?,
+      totalDuration: freezed == totalDuration
+          ? _value.totalDuration
+          : totalDuration // ignore: cast_nullable_to_non_nullable
+              as double?,
       playingMessageId: freezed == playingMessageId
           ? _value.playingMessageId
           : playingMessageId // ignore: cast_nullable_to_non_nullable
@@ -100,6 +114,8 @@ abstract class _$$ChatStateImplCopyWith<$Res>
       {List<ChatMessage> messages,
       bool isRecording,
       int recordingTime,
+      double? currentPosition,
+      double? totalDuration,
       int? playingMessageId,
       bool? isPlaying});
 }
@@ -120,6 +136,8 @@ class __$$ChatStateImplCopyWithImpl<$Res>
     Object? messages = null,
     Object? isRecording = null,
     Object? recordingTime = null,
+    Object? currentPosition = freezed,
+    Object? totalDuration = freezed,
     Object? playingMessageId = freezed,
     Object? isPlaying = freezed,
   }) {
@@ -136,6 +154,14 @@ class __$$ChatStateImplCopyWithImpl<$Res>
           ? _value.recordingTime
           : recordingTime // ignore: cast_nullable_to_non_nullable
               as int,
+      currentPosition: freezed == currentPosition
+          ? _value.currentPosition
+          : currentPosition // ignore: cast_nullable_to_non_nullable
+              as double?,
+      totalDuration: freezed == totalDuration
+          ? _value.totalDuration
+          : totalDuration // ignore: cast_nullable_to_non_nullable
+              as double?,
       playingMessageId: freezed == playingMessageId
           ? _value.playingMessageId
           : playingMessageId // ignore: cast_nullable_to_non_nullable
@@ -155,6 +181,8 @@ class _$ChatStateImpl implements _ChatState {
       {required final List<ChatMessage> messages,
       required this.isRecording,
       required this.recordingTime,
+      this.currentPosition,
+      this.totalDuration,
       this.playingMessageId,
       this.isPlaying})
       : _messages = messages;
@@ -172,13 +200,17 @@ class _$ChatStateImpl implements _ChatState {
   @override
   final int recordingTime;
   @override
+  final double? currentPosition;
+  @override
+  final double? totalDuration;
+  @override
   final int? playingMessageId;
   @override
   final bool? isPlaying;
 
   @override
   String toString() {
-    return 'ChatState(messages: $messages, isRecording: $isRecording, recordingTime: $recordingTime, playingMessageId: $playingMessageId, isPlaying: $isPlaying)';
+    return 'ChatState(messages: $messages, isRecording: $isRecording, recordingTime: $recordingTime, currentPosition: $currentPosition, totalDuration: $totalDuration, playingMessageId: $playingMessageId, isPlaying: $isPlaying)';
   }
 
   @override
@@ -191,6 +223,10 @@ class _$ChatStateImpl implements _ChatState {
                 other.isRecording == isRecording) &&
             (identical(other.recordingTime, recordingTime) ||
                 other.recordingTime == recordingTime) &&
+            (identical(other.currentPosition, currentPosition) ||
+                other.currentPosition == currentPosition) &&
+            (identical(other.totalDuration, totalDuration) ||
+                other.totalDuration == totalDuration) &&
             (identical(other.playingMessageId, playingMessageId) ||
                 other.playingMessageId == playingMessageId) &&
             (identical(other.isPlaying, isPlaying) ||
@@ -203,6 +239,8 @@ class _$ChatStateImpl implements _ChatState {
       const DeepCollectionEquality().hash(_messages),
       isRecording,
       recordingTime,
+      currentPosition,
+      totalDuration,
       playingMessageId,
       isPlaying);
 
@@ -220,6 +258,8 @@ abstract class _ChatState implements ChatState {
       {required final List<ChatMessage> messages,
       required final bool isRecording,
       required final int recordingTime,
+      final double? currentPosition,
+      final double? totalDuration,
       final int? playingMessageId,
       final bool? isPlaying}) = _$ChatStateImpl;
 
@@ -229,6 +269,10 @@ abstract class _ChatState implements ChatState {
   bool get isRecording;
   @override
   int get recordingTime;
+  @override
+  double? get currentPosition;
+  @override
+  double? get totalDuration;
   @override
   int? get playingMessageId;
   @override
@@ -252,8 +296,13 @@ mixin _$ChatEvent {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) =>
@@ -266,8 +315,11 @@ mixin _$ChatEvent {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) =>
       throw _privateConstructorUsedError;
@@ -279,8 +331,11 @@ mixin _$ChatEvent {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) =>
@@ -295,6 +350,9 @@ mixin _$ChatEvent {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) =>
       throw _privateConstructorUsedError;
@@ -308,6 +366,9 @@ mixin _$ChatEvent {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) =>
       throw _privateConstructorUsedError;
@@ -321,6 +382,9 @@ mixin _$ChatEvent {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) =>
@@ -394,8 +458,13 @@ class _$SendMessageImpl implements SendMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -411,8 +480,11 @@ class _$SendMessageImpl implements SendMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return sendMessage?.call();
@@ -427,8 +499,11 @@ class _$SendMessageImpl implements SendMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -449,6 +524,9 @@ class _$SendMessageImpl implements SendMessage {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return sendMessage(this);
@@ -465,6 +543,9 @@ class _$SendMessageImpl implements SendMessage {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return sendMessage?.call(this);
@@ -481,6 +562,9 @@ class _$SendMessageImpl implements SendMessage {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -570,8 +654,13 @@ class _$SendImageImpl implements SendImage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -587,8 +676,11 @@ class _$SendImageImpl implements SendImage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return sendImage?.call(imagePath);
@@ -603,8 +695,11 @@ class _$SendImageImpl implements SendImage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -625,6 +720,9 @@ class _$SendImageImpl implements SendImage {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return sendImage(this);
@@ -641,6 +739,9 @@ class _$SendImageImpl implements SendImage {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return sendImage?.call(this);
@@ -657,6 +758,9 @@ class _$SendImageImpl implements SendImage {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -754,8 +858,13 @@ class _$SendDocumentImpl implements SendDocument {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -771,8 +880,11 @@ class _$SendDocumentImpl implements SendDocument {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return sendDocument?.call(documentPath);
@@ -787,8 +899,11 @@ class _$SendDocumentImpl implements SendDocument {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -809,6 +924,9 @@ class _$SendDocumentImpl implements SendDocument {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return sendDocument(this);
@@ -825,6 +943,9 @@ class _$SendDocumentImpl implements SendDocument {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return sendDocument?.call(this);
@@ -841,6 +962,9 @@ class _$SendDocumentImpl implements SendDocument {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -910,8 +1034,13 @@ class _$StartRecordingImpl implements StartRecording {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -927,8 +1056,11 @@ class _$StartRecordingImpl implements StartRecording {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return startRecording?.call();
@@ -943,8 +1075,11 @@ class _$StartRecordingImpl implements StartRecording {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -965,6 +1100,9 @@ class _$StartRecordingImpl implements StartRecording {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return startRecording(this);
@@ -981,6 +1119,9 @@ class _$StartRecordingImpl implements StartRecording {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return startRecording?.call(this);
@@ -997,6 +1138,9 @@ class _$StartRecordingImpl implements StartRecording {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1087,8 +1231,13 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -1104,8 +1253,11 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return recordingCountDown?.call(secondsRemainin);
@@ -1120,8 +1272,11 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1142,6 +1297,9 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return recordingCountDown(this);
@@ -1158,6 +1316,9 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return recordingCountDown?.call(this);
@@ -1174,6 +1335,9 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1244,8 +1408,13 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -1261,8 +1430,11 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return sendVoiceRecording?.call();
@@ -1277,8 +1449,11 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1299,6 +1474,9 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return sendVoiceRecording(this);
@@ -1315,6 +1493,9 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return sendVoiceRecording?.call(this);
@@ -1331,6 +1512,9 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1351,7 +1535,7 @@ abstract class _$$PlayVoiceMessageImplCopyWith<$Res> {
           $Res Function(_$PlayVoiceMessageImpl) then) =
       __$$PlayVoiceMessageImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String voicePath, int messageId});
+  $Res call({int messageId, AudioPlayer player});
 }
 
 /// @nodoc
@@ -1367,18 +1551,18 @@ class __$$PlayVoiceMessageImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? voicePath = null,
     Object? messageId = null,
+    Object? player = null,
   }) {
     return _then(_$PlayVoiceMessageImpl(
-      null == voicePath
-          ? _value.voicePath
-          : voicePath // ignore: cast_nullable_to_non_nullable
-              as String,
       null == messageId
           ? _value.messageId
           : messageId // ignore: cast_nullable_to_non_nullable
               as int,
+      null == player
+          ? _value.player
+          : player // ignore: cast_nullable_to_non_nullable
+              as AudioPlayer,
     ));
   }
 }
@@ -1386,16 +1570,16 @@ class __$$PlayVoiceMessageImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
-  const _$PlayVoiceMessageImpl(this.voicePath, this.messageId);
+  const _$PlayVoiceMessageImpl(this.messageId, this.player);
 
   @override
-  final String voicePath;
-  @override
   final int messageId;
+  @override
+  final AudioPlayer player;
 
   @override
   String toString() {
-    return 'ChatEvent.playVoiceMessage(voicePath: $voicePath, messageId: $messageId)';
+    return 'ChatEvent.playVoiceMessage(messageId: $messageId, player: $player)';
   }
 
   @override
@@ -1403,14 +1587,13 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PlayVoiceMessageImpl &&
-            (identical(other.voicePath, voicePath) ||
-                other.voicePath == voicePath) &&
             (identical(other.messageId, messageId) ||
-                other.messageId == messageId));
+                other.messageId == messageId) &&
+            (identical(other.player, player) || other.player == player));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, voicePath, messageId);
+  int get hashCode => Object.hash(runtimeType, messageId, player);
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1430,12 +1613,17 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
-    return playVoiceMessage(voicePath, messageId);
+    return playVoiceMessage(messageId, player);
   }
 
   @override
@@ -1447,11 +1635,14 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
-    return playVoiceMessage?.call(voicePath, messageId);
+    return playVoiceMessage?.call(messageId, player);
   }
 
   @override
@@ -1463,13 +1654,16 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
     if (playVoiceMessage != null) {
-      return playVoiceMessage(voicePath, messageId);
+      return playVoiceMessage(messageId, player);
     }
     return orElse();
   }
@@ -1485,6 +1679,9 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return playVoiceMessage(this);
@@ -1501,6 +1698,9 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return playVoiceMessage?.call(this);
@@ -1517,6 +1717,9 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1528,11 +1731,11 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
 }
 
 abstract class PlayVoiceMessage implements ChatEvent {
-  const factory PlayVoiceMessage(final String voicePath, final int messageId) =
-      _$PlayVoiceMessageImpl;
+  const factory PlayVoiceMessage(
+      final int messageId, final AudioPlayer player) = _$PlayVoiceMessageImpl;
 
-  String get voicePath;
   int get messageId;
+  AudioPlayer get player;
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1617,8 +1820,13 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -1634,8 +1842,11 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return pauseVoiceMessage?.call(messageId);
@@ -1650,8 +1861,11 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1672,6 +1886,9 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return pauseVoiceMessage(this);
@@ -1688,6 +1905,9 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return pauseVoiceMessage?.call(this);
@@ -1704,6 +1924,9 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1724,6 +1947,644 @@ abstract class PauseVoiceMessage implements ChatEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PauseVoiceMessageImplCopyWith<_$PauseVoiceMessageImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$UpdatePositionImplCopyWith<$Res> {
+  factory _$$UpdatePositionImplCopyWith(_$UpdatePositionImpl value,
+          $Res Function(_$UpdatePositionImpl) then) =
+      __$$UpdatePositionImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int messageId, Duration position});
+}
+
+/// @nodoc
+class __$$UpdatePositionImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$UpdatePositionImpl>
+    implements _$$UpdatePositionImplCopyWith<$Res> {
+  __$$UpdatePositionImplCopyWithImpl(
+      _$UpdatePositionImpl _value, $Res Function(_$UpdatePositionImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? messageId = null,
+    Object? position = null,
+  }) {
+    return _then(_$UpdatePositionImpl(
+      null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$UpdatePositionImpl implements UpdatePosition {
+  const _$UpdatePositionImpl(this.messageId, this.position);
+
+  @override
+  final int messageId;
+  @override
+  final Duration position;
+
+  @override
+  String toString() {
+    return 'ChatEvent.updatePosition(messageId: $messageId, position: $position)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UpdatePositionImpl &&
+            (identical(other.messageId, messageId) ||
+                other.messageId == messageId) &&
+            (identical(other.position, position) ||
+                other.position == position));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, messageId, position);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UpdatePositionImplCopyWith<_$UpdatePositionImpl> get copyWith =>
+      __$$UpdatePositionImplCopyWithImpl<_$UpdatePositionImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() sendMessage,
+    required TResult Function(String imagePath) sendImage,
+    required TResult Function(String documentPath) sendDocument,
+    required TResult Function() startRecording,
+    required TResult Function(int secondsRemainin) recordingCountDown,
+    required TResult Function() sendVoiceRecording,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
+    required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
+    required TResult Function(List<ChatMessage> loadedMessages)
+        loadMessagesSuccess,
+  }) {
+    return updatePosition(messageId, position);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? sendMessage,
+    TResult? Function(String imagePath)? sendImage,
+    TResult? Function(String documentPath)? sendDocument,
+    TResult? Function()? startRecording,
+    TResult? Function(int secondsRemainin)? recordingCountDown,
+    TResult? Function()? sendVoiceRecording,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
+    TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+  }) {
+    return updatePosition?.call(messageId, position);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? sendMessage,
+    TResult Function(String imagePath)? sendImage,
+    TResult Function(String documentPath)? sendDocument,
+    TResult Function()? startRecording,
+    TResult Function(int secondsRemainin)? recordingCountDown,
+    TResult Function()? sendVoiceRecording,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
+    TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (updatePosition != null) {
+      return updatePosition(messageId, position);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SendMessage value) sendMessage,
+    required TResult Function(SendImage value) sendImage,
+    required TResult Function(SendDocument value) sendDocument,
+    required TResult Function(StartRecording value) startRecording,
+    required TResult Function(RecordingCountDown value) recordingCountDown,
+    required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(PlayVoiceMessage value) playVoiceMessage,
+    required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
+    required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
+  }) {
+    return updatePosition(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SendMessage value)? sendMessage,
+    TResult? Function(SendImage value)? sendImage,
+    TResult? Function(SendDocument value)? sendDocument,
+    TResult? Function(StartRecording value)? startRecording,
+    TResult? Function(RecordingCountDown value)? recordingCountDown,
+    TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+  }) {
+    return updatePosition?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SendMessage value)? sendMessage,
+    TResult Function(SendImage value)? sendImage,
+    TResult Function(SendDocument value)? sendDocument,
+    TResult Function(StartRecording value)? startRecording,
+    TResult Function(RecordingCountDown value)? recordingCountDown,
+    TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (updatePosition != null) {
+      return updatePosition(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class UpdatePosition implements ChatEvent {
+  const factory UpdatePosition(final int messageId, final Duration position) =
+      _$UpdatePositionImpl;
+
+  int get messageId;
+  Duration get position;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UpdatePositionImplCopyWith<_$UpdatePositionImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$StopVoiceMessageImplCopyWith<$Res> {
+  factory _$$StopVoiceMessageImplCopyWith(_$StopVoiceMessageImpl value,
+          $Res Function(_$StopVoiceMessageImpl) then) =
+      __$$StopVoiceMessageImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int messageId});
+}
+
+/// @nodoc
+class __$$StopVoiceMessageImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$StopVoiceMessageImpl>
+    implements _$$StopVoiceMessageImplCopyWith<$Res> {
+  __$$StopVoiceMessageImplCopyWithImpl(_$StopVoiceMessageImpl _value,
+      $Res Function(_$StopVoiceMessageImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? messageId = null,
+  }) {
+    return _then(_$StopVoiceMessageImpl(
+      null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$StopVoiceMessageImpl implements StopVoiceMessage {
+  const _$StopVoiceMessageImpl(this.messageId);
+
+  @override
+  final int messageId;
+
+  @override
+  String toString() {
+    return 'ChatEvent.stopVoiceMessage(messageId: $messageId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$StopVoiceMessageImpl &&
+            (identical(other.messageId, messageId) ||
+                other.messageId == messageId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, messageId);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$StopVoiceMessageImplCopyWith<_$StopVoiceMessageImpl> get copyWith =>
+      __$$StopVoiceMessageImplCopyWithImpl<_$StopVoiceMessageImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() sendMessage,
+    required TResult Function(String imagePath) sendImage,
+    required TResult Function(String documentPath) sendDocument,
+    required TResult Function() startRecording,
+    required TResult Function(int secondsRemainin) recordingCountDown,
+    required TResult Function() sendVoiceRecording,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
+    required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
+    required TResult Function(List<ChatMessage> loadedMessages)
+        loadMessagesSuccess,
+  }) {
+    return stopVoiceMessage(messageId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? sendMessage,
+    TResult? Function(String imagePath)? sendImage,
+    TResult? Function(String documentPath)? sendDocument,
+    TResult? Function()? startRecording,
+    TResult? Function(int secondsRemainin)? recordingCountDown,
+    TResult? Function()? sendVoiceRecording,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
+    TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+  }) {
+    return stopVoiceMessage?.call(messageId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? sendMessage,
+    TResult Function(String imagePath)? sendImage,
+    TResult Function(String documentPath)? sendDocument,
+    TResult Function()? startRecording,
+    TResult Function(int secondsRemainin)? recordingCountDown,
+    TResult Function()? sendVoiceRecording,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
+    TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (stopVoiceMessage != null) {
+      return stopVoiceMessage(messageId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SendMessage value) sendMessage,
+    required TResult Function(SendImage value) sendImage,
+    required TResult Function(SendDocument value) sendDocument,
+    required TResult Function(StartRecording value) startRecording,
+    required TResult Function(RecordingCountDown value) recordingCountDown,
+    required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(PlayVoiceMessage value) playVoiceMessage,
+    required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
+    required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
+  }) {
+    return stopVoiceMessage(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SendMessage value)? sendMessage,
+    TResult? Function(SendImage value)? sendImage,
+    TResult? Function(SendDocument value)? sendDocument,
+    TResult? Function(StartRecording value)? startRecording,
+    TResult? Function(RecordingCountDown value)? recordingCountDown,
+    TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+  }) {
+    return stopVoiceMessage?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SendMessage value)? sendMessage,
+    TResult Function(SendImage value)? sendImage,
+    TResult Function(SendDocument value)? sendDocument,
+    TResult Function(StartRecording value)? startRecording,
+    TResult Function(RecordingCountDown value)? recordingCountDown,
+    TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (stopVoiceMessage != null) {
+      return stopVoiceMessage(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class StopVoiceMessage implements ChatEvent {
+  const factory StopVoiceMessage(final int messageId) = _$StopVoiceMessageImpl;
+
+  int get messageId;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$StopVoiceMessageImplCopyWith<_$StopVoiceMessageImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SeekVoiceMessageImplCopyWith<$Res> {
+  factory _$$SeekVoiceMessageImplCopyWith(_$SeekVoiceMessageImpl value,
+          $Res Function(_$SeekVoiceMessageImpl) then) =
+      __$$SeekVoiceMessageImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int messageId, Duration seekPosition});
+}
+
+/// @nodoc
+class __$$SeekVoiceMessageImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$SeekVoiceMessageImpl>
+    implements _$$SeekVoiceMessageImplCopyWith<$Res> {
+  __$$SeekVoiceMessageImplCopyWithImpl(_$SeekVoiceMessageImpl _value,
+      $Res Function(_$SeekVoiceMessageImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? messageId = null,
+    Object? seekPosition = null,
+  }) {
+    return _then(_$SeekVoiceMessageImpl(
+      null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == seekPosition
+          ? _value.seekPosition
+          : seekPosition // ignore: cast_nullable_to_non_nullable
+              as Duration,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
+  const _$SeekVoiceMessageImpl(this.messageId, this.seekPosition);
+
+  @override
+  final int messageId;
+  @override
+  final Duration seekPosition;
+
+  @override
+  String toString() {
+    return 'ChatEvent.seekVoiceMessage(messageId: $messageId, seekPosition: $seekPosition)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SeekVoiceMessageImpl &&
+            (identical(other.messageId, messageId) ||
+                other.messageId == messageId) &&
+            (identical(other.seekPosition, seekPosition) ||
+                other.seekPosition == seekPosition));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, messageId, seekPosition);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SeekVoiceMessageImplCopyWith<_$SeekVoiceMessageImpl> get copyWith =>
+      __$$SeekVoiceMessageImplCopyWithImpl<_$SeekVoiceMessageImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() sendMessage,
+    required TResult Function(String imagePath) sendImage,
+    required TResult Function(String documentPath) sendDocument,
+    required TResult Function() startRecording,
+    required TResult Function(int secondsRemainin) recordingCountDown,
+    required TResult Function() sendVoiceRecording,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
+    required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
+    required TResult Function(List<ChatMessage> loadedMessages)
+        loadMessagesSuccess,
+  }) {
+    return seekVoiceMessage(messageId, seekPosition);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? sendMessage,
+    TResult? Function(String imagePath)? sendImage,
+    TResult? Function(String documentPath)? sendDocument,
+    TResult? Function()? startRecording,
+    TResult? Function(int secondsRemainin)? recordingCountDown,
+    TResult? Function()? sendVoiceRecording,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
+    TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+  }) {
+    return seekVoiceMessage?.call(messageId, seekPosition);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? sendMessage,
+    TResult Function(String imagePath)? sendImage,
+    TResult Function(String documentPath)? sendDocument,
+    TResult Function()? startRecording,
+    TResult Function(int secondsRemainin)? recordingCountDown,
+    TResult Function()? sendVoiceRecording,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
+    TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (seekVoiceMessage != null) {
+      return seekVoiceMessage(messageId, seekPosition);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SendMessage value) sendMessage,
+    required TResult Function(SendImage value) sendImage,
+    required TResult Function(SendDocument value) sendDocument,
+    required TResult Function(StartRecording value) startRecording,
+    required TResult Function(RecordingCountDown value) recordingCountDown,
+    required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(PlayVoiceMessage value) playVoiceMessage,
+    required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
+    required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
+  }) {
+    return seekVoiceMessage(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SendMessage value)? sendMessage,
+    TResult? Function(SendImage value)? sendImage,
+    TResult? Function(SendDocument value)? sendDocument,
+    TResult? Function(StartRecording value)? startRecording,
+    TResult? Function(RecordingCountDown value)? recordingCountDown,
+    TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+  }) {
+    return seekVoiceMessage?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SendMessage value)? sendMessage,
+    TResult Function(SendImage value)? sendImage,
+    TResult Function(SendDocument value)? sendDocument,
+    TResult Function(StartRecording value)? startRecording,
+    TResult Function(RecordingCountDown value)? recordingCountDown,
+    TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (seekVoiceMessage != null) {
+      return seekVoiceMessage(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class SeekVoiceMessage implements ChatEvent {
+  const factory SeekVoiceMessage(
+          final int messageId, final Duration seekPosition) =
+      _$SeekVoiceMessageImpl;
+
+  int get messageId;
+  Duration get seekPosition;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SeekVoiceMessageImplCopyWith<_$SeekVoiceMessageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1810,8 +2671,13 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
-    required TResult Function(String voicePath, int messageId) playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
     required TResult Function(int messageId) pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId) stopVoiceMessage,
+    required TResult Function(int messageId, Duration seekPosition)
+        seekVoiceMessage,
     required TResult Function(List<ChatMessage> loadedMessages)
         loadMessagesSuccess,
   }) {
@@ -1827,8 +2693,11 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
-    TResult? Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
   }) {
     return loadMessagesSuccess?.call(loadedMessages);
@@ -1843,8 +2712,11 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
-    TResult Function(String voicePath, int messageId)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition)? seekVoiceMessage,
     TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
     required TResult orElse(),
   }) {
@@ -1865,6 +2737,9 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
     required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
   }) {
     return loadMessagesSuccess(this);
@@ -1881,6 +2756,9 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
   }) {
     return loadMessagesSuccess?.call(this);
@@ -1897,6 +2775,9 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
     TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
     required TResult orElse(),
   }) {

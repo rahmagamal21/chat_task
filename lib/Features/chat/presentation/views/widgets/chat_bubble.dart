@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../../../core/common/res/colors.dart';
 import '../../../../../core/common/res/styles.dart';
@@ -111,7 +111,7 @@ class ChatBubble extends StatelessWidget {
                       return Text(
                         formattedSize,
                         style: Styles.hintStyle().copyWith(fontSize: 10),
-                      ); // Display the file size
+                      );
                     } else {
                       return const SizedBox.shrink();
                     }
@@ -122,41 +122,85 @@ class ChatBubble extends StatelessWidget {
           ],
         );
       case MessageType.voice:
-        return Row(
-          mainAxisAlignment: message.isSender
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
-          children: [
-            AudioFileWaveforms(
-              playerController: message.playerController!,
-              size: Size(200.w, 40.h),
-              playerWaveStyle: const PlayerWaveStyle(
-                  liveWaveColor: Colors.blue,
-                  fixedWaveColor: Colors.grey,
-                  spacing: 8.0,
-                  showSeekLine: false),
-              enableSeekGesture: true,
-              waveformType: WaveformType.long,
-            ),
-            GestureDetector(
-              child: Icon(
-                message.isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.blue,
-              ),
-              onTap: () {
-                final chatBloc = context.read<ChatBloc>();
-                if (message.isPlaying) {
-                  chatBloc.add(ChatEvent.pauseVoiceMessage(message.id));
-                } else {
-                  chatBloc.add(
-                      ChatEvent.playVoiceMessage(message.content, message.id));
-                }
-              },
-            ),
-          ],
+        // IconData? icon;
+        bool isPlaying = false;
+        double? currentPosition;
+        void Function(double)? onChanged;
+        return BlocConsumer<ChatBloc, ChatState>(
+          builder: (context, state) {
+            // final updatedMessage =
+            //     state.messages.firstWhere((m) => m.id == message.id);
+            return Row(
+              mainAxisAlignment: message.isSender
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Slider(
+                      value: currentPosition ??
+                          0, //message.currentPosition.inSeconds.toDouble(),
+                      max: message.totalDuration.inSeconds.toDouble(),
+                      activeColor: Colors.blue,
+                      onChanged: onChanged,
+                      //inactiveColor: Colors.grey,
+                      // onChanged: (value) {
+                      //   context.read<ChatBloc>().add(
+                      //         ChatEvent.seekVoiceMessage(
+                      //           message.id,
+                      //           Duration(seconds: value.toInt()),
+                      //         ),
+                      //       );
+                      // },
+                    ),
+                    // Text(formatDuration(updatedMessage.currentPosition)),
+                    // const Text(" / "),
+                    Text(
+                      '${formatDuration(message.totalDuration)} / ${formatDuration(message.currentPosition)}',
+                      style: Styles.hintStyle().copyWith(fontSize: 10),
+                    ),
+                  ],
+                ),
+                GestureDetector(
+                  child: Icon(
+                    isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.blue,
+                  ),
+                  onTap: () {
+                    context.read<ChatBloc>().add(
+                          ChatEvent.playVoiceMessage(
+                            message.id,
+                            AudioPlayer(),
+                          ),
+                        );
+                  },
+                ),
+              ],
+            );
+          },
+          listener: (BuildContext context, ChatState state) {
+            currentPosition = message.currentPosition.inSeconds.toDouble();
+            isPlaying = message.isPlaying;
+            onChanged = (value) {
+              context.read<ChatBloc>().add(
+                    ChatEvent.seekVoiceMessage(
+                      message.id,
+                      Duration(seconds: value.toInt()),
+                    ),
+                  );
+            };
+          },
         );
       default:
         return const SizedBox();
     }
   }
+}
+
+String formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final minutes = twoDigits(duration.inMinutes.remainder(60));
+  final seconds = twoDigits(duration.inSeconds.remainder(60));
+  return '$minutes:$seconds';
 }

@@ -6,6 +6,8 @@ class ChatState with _$ChatState {
     required List<ChatMessage> messages,
     required bool isRecording,
     required int recordingTime,
+    double? currentPosition,
+    double? totalDuration,
     int? playingMessageId,
     bool? isPlaying,
   }) = _ChatState;
@@ -14,6 +16,8 @@ class ChatState with _$ChatState {
         messages: [],
         isRecording: false,
         recordingTime: 180,
+        currentPosition: 0,
+        totalDuration: 0,
         playingMessageId: null,
         isPlaying: false,
       );
