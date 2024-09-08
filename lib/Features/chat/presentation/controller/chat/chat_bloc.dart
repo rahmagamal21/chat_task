@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -123,20 +124,46 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _recordingTimer?.cancel();
     final voicePath = await recorderController.stop();
     emit(state.copyWith(isRecording: false, recordingTime: 180));
-    if (voicePath != null) {
-      final newFilePath = await saveFile(File(voicePath), 'voice_messages',
-          '${DateTime.now().millisecondsSinceEpoch}.aac');
-      final newMessage = ChatMessage(
-        content: newFilePath,
-        type: MessageType.voice,
-        id: state.messages.length,
-        isSender: true,
-        timing: time,
-        // playerController: PlayerController(),
-      );
-      emit(state.copyWith(messages: [newMessage, ...state.messages]));
-      await saveMessages(state.messages);
+    if (voicePath != null && voicePath.isNotEmpty) {
+      final voiceFile = File(voicePath);
+      final fileSize = voiceFile.length();
+      log('${File(voicePath)}');
+      log('$fileSize');
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (await voiceFile.exists()) {
+        final newFilePath = await saveFile(voiceFile, 'voice_messages',
+            '${DateTime.now().millisecondsSinceEpoch}.aac');
+
+        final newMessage = ChatMessage(
+          content: newFilePath,
+          type: MessageType.voice,
+          id: state.messages.length,
+          isSender: true,
+          timing: time,
+        );
+
+        emit(state.copyWith(messages: [newMessage, ...state.messages]));
+
+        await saveMessages(state.messages);
+      } else {
+        throw Exception('Voice file does not exist.');
+      }
     }
+    // await Future.delayed(const Duration(milliseconds: 500));
+    // if (voicePath != null) {
+    //   final newFilePath = await saveFile(File(voicePath), 'voice_messages',
+    //       '${DateTime.now().millisecondsSinceEpoch}.aac');
+    //   final newMessage = ChatMessage(
+    //     content: newFilePath,
+    //     type: MessageType.voice,
+    //     id: state.messages.length,
+    //     isSender: true,
+    //     timing: time,
+    //     // playerController: PlayerController(),
+    //   );
+    //   emit(state.copyWith(messages: [newMessage, ...state.messages]));
+    //   await saveMessages(state.messages);
+    // }
   }
 
   void _onPlayVoiceMessage(
@@ -200,10 +227,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _onSeekVoiceMessage(
       SeekVoiceMessage event, Emitter<ChatState> emit) async {
-    // Seek to the specific position in the voice message
     final message = state.messages.firstWhere((m) => m.id == event.messageId);
-    final player =
-        AudioPlayer(); // Ideally, you should pass the player instance here
+    final player = AudioPlayer();
     await player.seek(event.seekPosition);
     emit(state.copyWith(
         messages: state.messages.map((m) {
@@ -249,14 +274,34 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<String> saveFile(File file, String folderName, String fileName) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/$folderName';
+    try {
+      // Get the app's document directory (which is persistent storage)
+      final directory = await getApplicationDocumentsDirectory();
 
-    await Directory(path).create(recursive: true);
+      // Create the 'voice_messages' directory if it doesn't exist
+      final saveDir = Directory('${directory.path}/$folderName');
+      if (!(await saveDir.exists())) {
+        await saveDir.create(recursive: true);
+      }
 
-    final filePath = '$path/$fileName';
-    final newFile = await file.copy(filePath);
-    return newFile.path;
+      // Set the file path to the new directory
+      final newPath = '${saveDir.path}/$fileName';
+
+      // Copy the file to the new directory
+      final newFile = await file.copy(newPath);
+
+      return newFile.path; // Return the path of the newly saved file
+    } catch (e) {
+      throw Exception('Error saving file: $e');
+    }
+    // final directory = await getApplicationDocumentsDirectory();
+    // final path = '${directory.path}/$folderName';
+
+    // await Directory(path).create(recursive: true);
+
+    // final filePath = '$path/$fileName';
+    // final newFile = await file.copy(filePath);
+    // return newFile.path;
   }
 
   Future<File> getFile(String folderName, String fileName) async {
