@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../../../../../core/common/res/colors.dart';
 import '../../../../../core/common/res/styles.dart';
@@ -78,60 +79,65 @@ class ChatBubble extends StatelessWidget {
           ),
         );
       case MessageType.document:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/images/file.png',
-              width: 30.w,
-              height: 30.h,
-            ),
-            //SvgPicture.asset('assets/images/attach-square.svg'),
-            SizedBox(
-              width: 8.w,
-            ),
+        return GestureDetector(
+          onTap: () async {
+            await OpenFilex.open(message.content);
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/file.png',
+                width: 30.w,
+                height: 30.h,
+              ),
+              //SvgPicture.asset('assets/images/attach-square.svg'),
+              SizedBox(
+                width: 8.w,
+              ),
 
-            // Image.file(
-            //   File(message.content),
-            //   fit: BoxFit.cover,
-            // ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  message.content.split('/').last,
-                  style: Styles.messageStyle(),
-                ),
-                SizedBox(
-                  height: 5.h,
-                ),
-                FutureBuilder<int>(
-                  future: getFileSize(message.content),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text(
-                        'Loading...',
-                        style: Styles.hintStyle().copyWith(fontSize: 10),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text(
-                        'Error',
-                        style: Styles.hintStyle().copyWith(fontSize: 10),
-                      );
-                    } else if (snapshot.hasData) {
-                      final formattedSize = formatFileSize(snapshot.data!);
-                      return Text(
-                        formattedSize,
-                        style: Styles.hintStyle().copyWith(fontSize: 10),
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                ),
-              ],
-            ),
-          ],
+              // Image.file(
+              //   File(message.content),
+              //   fit: BoxFit.cover,
+              // ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    message.content.split('/').last,
+                    style: Styles.messageStyle(),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  FutureBuilder<int>(
+                    future: getFileSize(message.content),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text(
+                          'Loading...',
+                          style: Styles.hintStyle().copyWith(fontSize: 10),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text(
+                          'Error',
+                          style: Styles.hintStyle().copyWith(fontSize: 10),
+                        );
+                      } else if (snapshot.hasData) {
+                        final formattedSize = formatFileSize(snapshot.data!);
+                        return Text(
+                          formattedSize,
+                          style: Styles.hintStyle().copyWith(fontSize: 10),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       case MessageType.voice:
         // IconData? icon;

@@ -257,9 +257,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   // }
 
   Future<void> pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      add(ChatEvent.sendDocument(result.files.first.path!));
+    final result = await FilePicker.platform.pickFiles(type: FileType.any);
+    if (result != null && result.files.single.path != null) {
+      add(ChatEvent.sendDocument(result.files.single.path!));
     }
   }
 
