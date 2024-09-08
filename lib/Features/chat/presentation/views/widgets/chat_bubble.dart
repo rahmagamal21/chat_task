@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat_task/Features/chat/presentation/views/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,9 +62,20 @@ class ChatBubble extends StatelessWidget {
           style: Styles.messageStyle(),
         );
       case MessageType.image:
-        return Image.file(
-          File(message.content),
-          fit: BoxFit.cover,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ImageViewerScreen(imagePath: message.content),
+              ),
+            );
+          },
+          child: Image.file(
+            File(message.content),
+            fit: BoxFit.cover,
+          ),
         );
       case MessageType.document:
         return Row(
