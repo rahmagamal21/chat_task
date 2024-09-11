@@ -17,32 +17,42 @@ class InputField extends StatelessWidget {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state) {
         return state.isRecording
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Expanded(
-                  //   child: AudioWaveforms(
-                  //     recorderController: chatBloc.record,
-                  //     size: Size(MediaQuery.of(context).size.width * 0.7, 50),
-                  //     waveStyle: const WaveStyle(
-                  //       waveColor: Colors.blue,
-                  //       spacing: 8.0,
-                  //       showMiddleLine: false,
-                  //     ),
-                  //   ),
-                  // ),
+            ? Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 0.5,
+                    color: AllColors.border,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Expanded(
+                    //   child: AudioWaveforms(
+                    //     recorderController: chatBloc.record,
+                    //     size: Size(MediaQuery.of(context).size.width * 0.7, 50),
+                    //     waveStyle: const WaveStyle(
+                    //       waveColor: Colors.blue,
+                    //       spacing: 8.0,
+                    //       showMiddleLine: false,
+                    //     ),
+                    //   ),
+                    // ),
 
-                  Text("${state.recordingTime} sec"),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.stop),
-                    onPressed: () {
-                      chatBloc.add(const ChatEvent.sendVoiceRecording());
-                    },
-                  ),
-                ],
+                    Text("${state.recordingTime} sec"),
+                    // const SizedBox.expand(
+                    //     //width: 10.w,
+                    //     ),
+                    IconButton(
+                      icon: const Icon(Icons.stop),
+                      onPressed: () {
+                        chatBloc.add(const ChatEvent.sendVoiceRecording());
+                      },
+                    ),
+                  ],
+                ),
               )
             : TextFormField(
                 controller: chatBloc.controller,

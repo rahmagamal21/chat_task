@@ -158,12 +158,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (voicePath != null && voicePath.isNotEmpty) {
       final voiceFile = File(voicePath);
       final fileSize = voiceFile.length();
+
       log('${File(voicePath)}');
       log('$fileSize');
       await Future.delayed(const Duration(milliseconds: 500));
       if (await voiceFile.exists()) {
         final newFilePath = await saveFile(voiceFile, 'voice_messages',
             '${DateTime.now().millisecondsSinceEpoch}.aac');
+        final player = AudioPlayer();
+        await player.setFilePath(voicePath);
+        final totalDuration = player.duration ?? Duration.zero;
 
         final newMessage = ChatMessage(
           content: newFilePath,
@@ -171,6 +175,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           id: state.messages.length,
           isSender: true,
           timing: time,
+          totalDuration: totalDuration,
         );
 
         emit(state.copyWith(messages: [newMessage, ...state.messages]));
