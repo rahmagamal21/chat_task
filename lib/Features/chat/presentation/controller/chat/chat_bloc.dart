@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../message.dart';
@@ -22,8 +22,10 @@ part 'chat_bloc.freezed.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   TextEditingController controller = TextEditingController();
-  final RecorderController recorderController = RecorderController();
+  //final RecorderController recorderController = RecorderController();
+  final AudioRecorder record = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
+  String? _filePath;
   Timer? _recordingTimer;
 // int? _currentPlayingMessageId;
 
@@ -103,26 +105,55 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _onStartRecording(StartRecording event, Emitter<ChatState> emit) async {
-    await recorderController.record();
-    int recordingCoutDown = 180;
-    emit(state.copyWith(isRecording: true, recordingTime: recordingCoutDown));
+    final permissionStatus = await Permission.microphone.request();
 
-    _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      recordingCoutDown = 180 - timer.tick;
-      if (recordingCoutDown <= 1) {
-        timer.cancel();
-        add(const ChatEvent.sendVoiceRecording());
-      } else {
-        add(ChatEvent.recordingCountDown(recordingCoutDown));
-      }
-    });
+    if (permissionStatus.isGranted) {
+      final directory = await getApplicationDocumentsDirectory();
+      _filePath =
+          '${directory.path}/recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      const config = RecordConfig(
+        encoder: AudioEncoder.aacLc,
+        sampleRate: 44100,
+        bitRate: 128000,
+      );
+      await record.start(config, path: _filePath!);
+
+      int recordingCountDown = 180;
+      emit(
+          state.copyWith(isRecording: true, recordingTime: recordingCountDown));
+
+      _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        recordingCountDown--;
+        if (recordingCountDown <= 0) {
+          timer.cancel();
+          add(const ChatEvent.sendVoiceRecording());
+        } else {
+          add(ChatEvent.recordingCountDown(recordingCountDown));
+        }
+      });
+    } else {
+      log("Microphone permission denied");
+    }
+    // await recorderController.record();
+    // int recordingCoutDown = 180;
+    // emit(state.copyWith(isRecording: true, recordingTime: recordingCoutDown));
+
+    // _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    //   recordingCoutDown = 180 - timer.tick;
+    //   if (recordingCoutDown <= 1) {
+    //     timer.cancel();
+    //     add(const ChatEvent.sendVoiceRecording());
+    //   } else {
+    //     add(ChatEvent.recordingCountDown(recordingCoutDown));
+    //   }
+    // });
   }
 
   void _onSendVoiceRecording(
       SendVoiceRecording event, Emitter<ChatState> emit) async {
     final time = DateFormat('h:mm a').format(DateTime.now());
     _recordingTimer?.cancel();
-    final voicePath = await recorderController.stop();
+    final voicePath = await record.stop();
     emit(state.copyWith(isRecording: false, recordingTime: 180));
     if (voicePath != null && voicePath.isNotEmpty) {
       final voiceFile = File(voicePath);
@@ -215,7 +246,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void onStopVoiceMessage(StopVoiceMessage event, Emitter<ChatState> emit) {
-    final message = state.messages.firstWhere((m) => m.id == event.messageId);
+    //final message = state.messages.firstWhere((m) => m.id == event.messageId);
     emit(state.copyWith(
         messages: state.messages.map((m) {
       if (m.id == event.messageId) {
@@ -227,7 +258,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _onSeekVoiceMessage(
       SeekVoiceMessage event, Emitter<ChatState> emit) async {
-    final message = state.messages.firstWhere((m) => m.id == event.messageId);
+    // final message = state.messages.firstWhere((m) => m.id == event.messageId);
     final player = AudioPlayer();
     await player.seek(event.seekPosition);
     emit(state.copyWith(
@@ -360,7 +391,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   @override
   Future<void> close() {
-    recorderController.dispose();
+    record.dispose();
     controller.dispose();
     _recordingTimer?.cancel();
     return super.close();

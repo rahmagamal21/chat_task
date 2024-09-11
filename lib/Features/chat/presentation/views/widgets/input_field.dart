@@ -1,4 +1,3 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chat_task/core/common/res/colors.dart';
 import 'package:chat_task/core/common/res/styles.dart';
 import 'package:flutter/material.dart';
@@ -21,21 +20,22 @@ class InputField extends StatelessWidget {
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: AudioWaveforms(
-                      recorderController: chatBloc.recorderController,
-                      size: Size(MediaQuery.of(context).size.width * 0.7, 50),
-                      waveStyle: const WaveStyle(
-                        waveColor: Colors.blue,
-                        spacing: 8.0,
-                        showMiddleLine: false,
-                      ),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: AudioWaveforms(
+                  //     recorderController: chatBloc.record,
+                  //     size: Size(MediaQuery.of(context).size.width * 0.7, 50),
+                  //     waveStyle: const WaveStyle(
+                  //       waveColor: Colors.blue,
+                  //       spacing: 8.0,
+                  //       showMiddleLine: false,
+                  //     ),
+                  //   ),
+                  // ),
+
+                  Text("${state.recordingTime} sec"),
                   SizedBox(
                     width: 10.w,
                   ),
-                  Text("${state.recordingTime} sec"),
                   IconButton(
                     icon: const Icon(Icons.stop),
                     onPressed: () {
