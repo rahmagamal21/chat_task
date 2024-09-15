@@ -40,8 +40,9 @@ class InputField extends StatelessWidget {
                     //     ),
                     //   ),
                     // ),
+                    Text(formatDurationFromSeconds(state.recordingTime)),
 
-                    Text("${state.recordingTime} sec"),
+                    // Text("${state.recordingTime} sec"),
                     // const SizedBox.expand(
                     //     //width: 10.w,
                     //     ),
@@ -122,5 +123,12 @@ class InputField extends StatelessWidget {
         color: AllColors.border,
       ),
     );
+  }
+
+  String formatDurationFromSeconds(int totalSeconds) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(totalSeconds ~/ 60); // Get the whole minutes
+    final seconds = twoDigits(totalSeconds % 60); // Get the remaining seconds
+    return '$minutes:$seconds';
   }
 }

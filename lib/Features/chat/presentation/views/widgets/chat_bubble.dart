@@ -1,15 +1,13 @@
 import 'dart:io';
 
+import 'package:chat_task/Features/chat/presentation/views/widgets/audio_bubble.dart';
 import 'package:chat_task/Features/chat/presentation/views/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:open_filex/open_filex.dart';
 
 import '../../../../../core/common/res/colors.dart';
 import '../../../../../core/common/res/styles.dart';
-import '../../controller/chat/chat_bloc.dart';
 import '../../controller/message.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -140,76 +138,77 @@ class ChatBubble extends StatelessWidget {
           ),
         );
       case MessageType.voice:
-        // IconData? icon;
-        bool isPlaying = false;
-        double? currentPosition;
-        void Function(double)? onChanged;
-        return BlocConsumer<ChatBloc, ChatState>(
-          builder: (context, state) {
-            // final updatedMessage =
-            //     state.messages.firstWhere((m) => m.id == message.id);
-            return Row(
-              mainAxisAlignment: message.isSender
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Slider(
-                      value: currentPosition ??
-                          0, //message.currentPosition.inSeconds.toDouble(),
-                      max: message.totalDuration.inSeconds.toDouble(),
-                      activeColor: Colors.blue,
-                      onChanged: onChanged,
-                      //inactiveColor: Colors.grey,
-                      // onChanged: (value) {
-                      //   context.read<ChatBloc>().add(
-                      //         ChatEvent.seekVoiceMessage(
-                      //           message.id,
-                      //           Duration(seconds: value.toInt()),
-                      //         ),
-                      //       );
-                      // },
-                    ),
-                    // Text(formatDuration(updatedMessage.currentPosition)),
-                    // const Text(" / "),
-                    Text(
-                      '${formatDuration(message.totalDuration)} / ${formatDuration(message.currentPosition)}',
-                      style: Styles.hintStyle().copyWith(fontSize: 10),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  child: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.blue,
-                  ),
-                  onTap: () {
-                    context.read<ChatBloc>().add(
-                          ChatEvent.playVoiceMessage(
-                            message.id,
-                            AudioPlayer(),
-                          ),
-                        );
-                  },
-                ),
-              ],
-            );
-          },
-          listener: (BuildContext context, ChatState state) {
-            currentPosition = message.currentPosition.inSeconds.toDouble();
-            isPlaying = message.isPlaying;
-            onChanged = (value) {
-              context.read<ChatBloc>().add(
-                    ChatEvent.seekVoiceMessage(
-                      message.id,
-                      Duration(seconds: value.toInt()),
-                    ),
-                  );
-            };
-          },
-        );
+        return AudioBubble(message: message);
+      // IconData? icon;
+      // bool isPlaying = false;
+      // double? currentPosition;
+      // void Function(double)? onChanged;
+      // return BlocConsumer<ChatBloc, ChatState>(
+      //   builder: (context, state) {
+      //     // final updatedMessage =
+      //     //     state.messages.firstWhere((m) => m.id == message.id);
+      //     return Row(
+      //       mainAxisAlignment: message.isSender
+      //           ? MainAxisAlignment.end
+      //           : MainAxisAlignment.start,
+      //       children: [
+      //         Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             Slider(
+      //               value: currentPosition ??
+      //                   0, //message.currentPosition.inSeconds.toDouble(),
+      //               max: message.totalDuration.inSeconds.toDouble(),
+      //               activeColor: Colors.blue,
+      //               onChanged: onChanged,
+      //               //inactiveColor: Colors.grey,
+      //               // onChanged: (value) {
+      //               //   context.read<ChatBloc>().add(
+      //               //         ChatEvent.seekVoiceMessage(
+      //               //           message.id,
+      //               //           Duration(seconds: value.toInt()),
+      //               //         ),
+      //               //       );
+      //               // },
+      //             ),
+      //             // Text(formatDuration(updatedMessage.currentPosition)),
+      //             // const Text(" / "),
+      //             Text(
+      //               '${formatDuration(message.totalDuration)} / ${formatDuration(message.currentPosition)}',
+      //               style: Styles.hintStyle().copyWith(fontSize: 10),
+      //             ),
+      //           ],
+      //         ),
+      //         GestureDetector(
+      //           child: Icon(
+      //             isPlaying ? Icons.pause : Icons.play_arrow,
+      //             color: Colors.blue,
+      //           ),
+      //           onTap: () {
+      //             context.read<ChatBloc>().add(
+      //                   ChatEvent.playVoiceMessage(
+      //                     message.id,
+      //                     AudioPlayer(),
+      //                   ),
+      //                 );
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      //   listener: (BuildContext context, ChatState state) {
+      //     currentPosition = message.currentPosition.inSeconds.toDouble();
+      //     isPlaying = message.isPlaying;
+      //     onChanged = (value) {
+      //       context.read<ChatBloc>().add(
+      //             ChatEvent.seekVoiceMessage(
+      //               message.id,
+      //               Duration(seconds: value.toInt()),
+      //             ),
+      //           );
+      //     };
+      //   },
+      // );
       default:
         return const SizedBox();
     }

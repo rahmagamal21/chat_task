@@ -36,7 +36,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<StartRecording>(_onStartRecording);
     on<SendVoiceRecording>(_onSendVoiceRecording);
     on<PlayVoiceMessage>(_onPlayVoiceMessage);
+    on<PauseVoiceMessage>(_onPause);
     on<StopVoiceMessage>(onStopVoiceMessage);
+    on<UpdatePosition>(onUpdatePosition);
     //on<PauseVoiceMessage>(_onPauseVoiceMessage);
     on<SeekVoiceMessage>(_onSeekVoiceMessage);
     on<RecordingCountDown>((event, emit) => emit(
@@ -206,37 +208,46 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       PlayVoiceMessage event, Emitter<ChatState> emit) async {
     final message = state.messages.firstWhere((m) => m.id == event.messageId);
 
-    if (message.isPlaying) {
-      await event.player.pause();
+    if (!message.isPlaying) {
       emit(state.copyWith(
-          messages: state.messages.map((m) {
-        if (m.id == event.messageId) {
-          return m.copyWith(isPlaying: false);
-        }
-        return m;
-      }).toList()));
-    } else {
+        messages: state.messages.map((m) {
+          if (m.id == event.messageId) {
+            return m.copyWith(isPlaying: true);
+          }
+          return m;
+        }).toList(),
+      ));
       await event.player.setFilePath(message.content);
       await event.player.play();
-      emit(state.copyWith(
-          messages: state.messages.map((m) {
-        if (m.id == event.messageId) {
-          return m.copyWith(
-              isPlaying: true, totalDuration: event.player.duration!);
-        }
-        return m;
-      }).toList()));
+      // emit(state.copyWith(
+      //     messages: state.messages.map((m) {
+      //   if (m.id == event.messageId) {
+      //     return m.copyWith(
+      //         isPlaying: true, totalDuration: event.player.duration!);
+      //   }
+      //   return m;
+      // }).toList()));
 
       event.player.positionStream.listen((position) {
-        add(ChatEvent.updatePosition(event.messageId, position));
+        add(
+          ChatEvent.updatePosition(event.messageId, position),
+        );
+        //add(ChatEvent.updatePosition(event.messageId, position));
       });
 
       event.player.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
-          add(ChatEvent.stopVoiceMessage(event.messageId));
+          add(ChatEvent.stopVoiceMessage(event.messageId, event.player));
+          //add(ChatEvent.stopVoiceMessage(event.messageId));
         }
       });
     }
+  }
+
+  void _onPause(PauseVoiceMessage event, Emitter<ChatState> emit) {
+    event.player.pause();
+    emit(state.copyWith(
+        currentPosition: event.player.position.inSeconds.toDouble()));
   }
 
   void onUpdatePosition(UpdatePosition event, Emitter<ChatState> emit) {
@@ -250,22 +261,34 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }).toList()));
   }
 
-  void onStopVoiceMessage(StopVoiceMessage event, Emitter<ChatState> emit) {
+  void onStopVoiceMessage(
+      StopVoiceMessage event, Emitter<ChatState> emit) async {
     //final message = state.messages.firstWhere((m) => m.id == event.messageId);
+    // emit(state.copyWith(
+    //     messages: state.messages.map((m) {
+    //   if (m.id == event.messageId) {
+    //     return m.copyWith(isPlaying: false, currentPosition: Duration.zero);
+    //   }
+    //   return m;
+    // }).toList()));
+    // Assuming we use a new instance or manage the same player instance
+    await event.player.stop();
     emit(state.copyWith(
-        messages: state.messages.map((m) {
-      if (m.id == event.messageId) {
-        return m.copyWith(isPlaying: false, currentPosition: Duration.zero);
-      }
-      return m;
-    }).toList()));
+      messages: state.messages.map((m) {
+        if (m.id == event.messageId) {
+          return m.copyWith(isPlaying: false, currentPosition: Duration.zero);
+        }
+        return m;
+      }).toList(),
+    ));
+    //emit(state.copyWith(isPlaying: false, playingMessageId: null));
   }
 
   void _onSeekVoiceMessage(
       SeekVoiceMessage event, Emitter<ChatState> emit) async {
     // final message = state.messages.firstWhere((m) => m.id == event.messageId);
-    final player = AudioPlayer();
-    await player.seek(event.seekPosition);
+
+    await event.player.seek(event.seekPosition);
     emit(state.copyWith(
         messages: state.messages.map((m) {
       if (m.id == event.messageId) {

@@ -13,12 +13,15 @@ class ChatEvent with _$ChatEvent {
   //     PlayVoiceMessage;
   const factory ChatEvent.playVoiceMessage(int messageId, AudioPlayer player) =
       PlayVoiceMessage;
-  const factory ChatEvent.pauseVoiceMessage(int messageId) = PauseVoiceMessage;
+  const factory ChatEvent.pauseVoiceMessage(int messageId, AudioPlayer player) =
+      PauseVoiceMessage;
   const factory ChatEvent.updatePosition(int messageId, Duration position) =
       UpdatePosition;
-  const factory ChatEvent.stopVoiceMessage(int messageId) = StopVoiceMessage;
+  const factory ChatEvent.stopVoiceMessage(int messageId, AudioPlayer player) =
+      StopVoiceMessage;
   const factory ChatEvent.seekVoiceMessage(
-      int messageId, Duration seekPosition) = SeekVoiceMessage;
+          int messageId, Duration seekPosition, AudioPlayer player) =
+      SeekVoiceMessage;
   const factory ChatEvent.loadMessagesSuccess(
       List<ChatMessage> loadedMessages) = LoadMessagesSuccess;
 }
