@@ -36,21 +36,41 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: 260.w, minWidth: 122.w),
-      padding: EdgeInsets.all(message.type == MessageType.image ? 5.w : 15.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomRight: const Radius.circular(10),
-          bottomLeft: const Radius.circular(10),
-          topLeft: message.isSender ? const Radius.circular(10) : Radius.zero,
-          topRight: message.isSender ? Radius.zero : const Radius.circular(10),
+    if (message.type == MessageType.voice) {
+      return Container(
+        constraints: BoxConstraints(maxWidth: 260.w, minWidth: 122.w),
+        padding: EdgeInsets.all(message.type == MessageType.image ? 5.w : 15.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            bottomRight: const Radius.circular(10),
+            bottomLeft: const Radius.circular(10),
+            topLeft: message.isSender ? const Radius.circular(10) : Radius.zero,
+            topRight:
+                message.isSender ? Radius.zero : const Radius.circular(10),
+          ),
+          border: Border.all(width: 0.5, color: AllColors.border),
+          color: message.isSender ? Colors.white : AllColors.receiveBubble,
         ),
-        color:
-            message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
-      ),
-      child: buildBubbleChild(context),
-    );
+        child: AudioBubble(message: message),
+      );
+    } else {
+      return Container(
+        constraints: BoxConstraints(maxWidth: 260.w, minWidth: 122.w),
+        padding: EdgeInsets.all(message.type == MessageType.image ? 5.w : 15.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            bottomRight: const Radius.circular(10),
+            bottomLeft: const Radius.circular(10),
+            topLeft: message.isSender ? const Radius.circular(10) : Radius.zero,
+            topRight:
+                message.isSender ? Radius.zero : const Radius.circular(10),
+          ),
+          color:
+              message.isSender ? AllColors.sendBubble : AllColors.receiveBubble,
+        ),
+        child: buildBubbleChild(context),
+      );
+    }
   }
 
   Widget buildBubbleChild(BuildContext context) {
@@ -137,8 +157,8 @@ class ChatBubble extends StatelessWidget {
             ],
           ),
         );
-      case MessageType.voice:
-        return AudioBubble(message: message);
+      // case MessageType.voice:
+      //   return AudioBubble(message: message);
       // IconData? icon;
       // bool isPlaying = false;
       // double? currentPosition;
