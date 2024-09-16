@@ -5,44 +5,67 @@ import 'package:voice_message_package/voice_message_package.dart';
 import '../../controller/chat/chat_bloc.dart';
 import '../../controller/message.dart';
 
-class AudioBubble extends StatelessWidget {
+class AudioBubble extends StatefulWidget {
   const AudioBubble({super.key, required this.message});
 
   final ChatMessage message;
 
   @override
+  State<AudioBubble> createState() => _AudioBubbleState();
+}
+
+class _AudioBubbleState extends State<AudioBubble> {
+  static VoiceController? _currentlyPlayingController;
+
+  late final VoiceController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VoiceController(
+      audioSrc: widget.message.content,
+      maxDuration: widget.message.totalDuration,
+      isFile: true,
+      onComplete: _onComplete,
+      onPause: _onPause,
+      onPlaying: _onPlaying,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onComplete() {
+    if (_currentlyPlayingController == _controller) {
+      _currentlyPlayingController = null;
+    }
+  }
+
+  void _onPause() {}
+
+  void _onPlaying() {
+    if (_currentlyPlayingController != null &&
+        _currentlyPlayingController != _controller) {
+      _currentlyPlayingController!.pausePlaying();
+    }
+
+    _currentlyPlayingController = _controller;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: VoiceMessageView(
-            //backgroundColor: Colors.transparent,
-            activeSliderColor: Colors.blue,
-            //notActiveSliderColor: AllColors.sendBubble.withOpacity(0.04),
-            circlesColor: AllColors.lightBlue,
-            innerPadding: 0,
-            controller: VoiceController(
-              audioSrc: message.content,
-              maxDuration: message.totalDuration,
-              isFile: true,
-              onComplete: () {
-                // context
-                //     .read<ChatBloc>()
-                //     .add(ChatEvent.stopVoiceMessage(message.id, audioPlayer));
-              },
-              onPause: () {
-                // context
-                //     .read<ChatBloc>()
-                //     .add(ChatEvent.pauseVoiceMessage(message.id, audioPlayer));
-              },
-              onPlaying: () {
-                // context
-                //     .read<ChatBloc>()
-                //     .add(ChatEvent.playVoiceMessage(message.id, audioPlayer));
-              },
-            ),
-          ),
+        return VoiceMessageView(
+          //backgroundColor: Colors.transparent,
+          activeSliderColor: Colors.blue,
+          //notActiveSliderColor: AllColors.sendBubble.withOpacity(0.04),
+          circlesColor: AllColors.lightBlue,
+          innerPadding: 0,
+          controller: _controller,
         );
         // return Row(
         //   mainAxisAlignment: message.isSender

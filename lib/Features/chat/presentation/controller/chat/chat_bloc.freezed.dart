@@ -296,6 +296,7 @@ mixin _$ChatEvent {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -318,6 +319,7 @@ mixin _$ChatEvent {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -335,6 +337,7 @@ mixin _$ChatEvent {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -353,6 +356,7 @@ mixin _$ChatEvent {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -369,6 +373,7 @@ mixin _$ChatEvent {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -385,6 +390,7 @@ mixin _$ChatEvent {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -463,6 +469,7 @@ class _$SendMessageImpl implements SendMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -488,6 +495,7 @@ class _$SendMessageImpl implements SendMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -508,6 +516,7 @@ class _$SendMessageImpl implements SendMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -532,6 +541,7 @@ class _$SendMessageImpl implements SendMessage {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -551,6 +561,7 @@ class _$SendMessageImpl implements SendMessage {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -570,6 +581,7 @@ class _$SendMessageImpl implements SendMessage {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -664,6 +676,7 @@ class _$SendImageImpl implements SendImage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -689,6 +702,7 @@ class _$SendImageImpl implements SendImage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -709,6 +723,7 @@ class _$SendImageImpl implements SendImage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -733,6 +748,7 @@ class _$SendImageImpl implements SendImage {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -752,6 +768,7 @@ class _$SendImageImpl implements SendImage {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -771,6 +788,7 @@ class _$SendImageImpl implements SendImage {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -873,6 +891,7 @@ class _$SendDocumentImpl implements SendDocument {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -898,6 +917,7 @@ class _$SendDocumentImpl implements SendDocument {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -918,6 +938,7 @@ class _$SendDocumentImpl implements SendDocument {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -942,6 +963,7 @@ class _$SendDocumentImpl implements SendDocument {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -961,6 +983,7 @@ class _$SendDocumentImpl implements SendDocument {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -980,6 +1003,7 @@ class _$SendDocumentImpl implements SendDocument {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -1054,6 +1078,7 @@ class _$StartRecordingImpl implements StartRecording {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -1079,6 +1104,7 @@ class _$StartRecordingImpl implements StartRecording {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -1099,6 +1125,7 @@ class _$StartRecordingImpl implements StartRecording {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -1123,6 +1150,7 @@ class _$StartRecordingImpl implements StartRecording {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -1142,6 +1170,7 @@ class _$StartRecordingImpl implements StartRecording {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -1161,6 +1190,7 @@ class _$StartRecordingImpl implements StartRecording {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -1256,6 +1286,7 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -1281,6 +1312,7 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -1301,6 +1333,7 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -1325,6 +1358,7 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -1344,6 +1378,7 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -1363,6 +1398,7 @@ class _$RecordingCountDownImpl implements RecordingCountDown {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -1438,6 +1474,7 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -1463,6 +1500,7 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -1483,6 +1521,7 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -1507,6 +1546,7 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -1526,6 +1566,7 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -1545,6 +1586,7 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -1562,6 +1604,185 @@ class _$SendVoiceRecordingImpl implements SendVoiceRecording {
 
 abstract class SendVoiceRecording implements ChatEvent {
   const factory SendVoiceRecording() = _$SendVoiceRecordingImpl;
+}
+
+/// @nodoc
+abstract class _$$CancelRecordingImplCopyWith<$Res> {
+  factory _$$CancelRecordingImplCopyWith(_$CancelRecordingImpl value,
+          $Res Function(_$CancelRecordingImpl) then) =
+      __$$CancelRecordingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$CancelRecordingImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$CancelRecordingImpl>
+    implements _$$CancelRecordingImplCopyWith<$Res> {
+  __$$CancelRecordingImplCopyWithImpl(
+      _$CancelRecordingImpl _value, $Res Function(_$CancelRecordingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$CancelRecordingImpl implements CancelRecording {
+  const _$CancelRecordingImpl();
+
+  @override
+  String toString() {
+    return 'ChatEvent.cancelRecording()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$CancelRecordingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() sendMessage,
+    required TResult Function(String imagePath) sendImage,
+    required TResult Function(String documentPath) sendDocument,
+    required TResult Function() startRecording,
+    required TResult Function(int secondsRemainin) recordingCountDown,
+    required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
+    required TResult Function(int messageId, AudioPlayer player)
+        playVoiceMessage,
+    required TResult Function(int messageId, AudioPlayer player)
+        pauseVoiceMessage,
+    required TResult Function(int messageId, Duration position) updatePosition,
+    required TResult Function(int messageId, AudioPlayer player)
+        stopVoiceMessage,
+    required TResult Function(
+            int messageId, Duration seekPosition, AudioPlayer player)
+        seekVoiceMessage,
+    required TResult Function(List<ChatMessage> loadedMessages)
+        loadMessagesSuccess,
+  }) {
+    return cancelRecording();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? sendMessage,
+    TResult? Function(String imagePath)? sendImage,
+    TResult? Function(String documentPath)? sendDocument,
+    TResult? Function()? startRecording,
+    TResult? Function(int secondsRemainin)? recordingCountDown,
+    TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
+    TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
+    TResult? Function(int messageId, Duration position)? updatePosition,
+    TResult? Function(int messageId, AudioPlayer player)? stopVoiceMessage,
+    TResult? Function(int messageId, Duration seekPosition, AudioPlayer player)?
+        seekVoiceMessage,
+    TResult? Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+  }) {
+    return cancelRecording?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? sendMessage,
+    TResult Function(String imagePath)? sendImage,
+    TResult Function(String documentPath)? sendDocument,
+    TResult Function()? startRecording,
+    TResult Function(int secondsRemainin)? recordingCountDown,
+    TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
+    TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
+    TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
+    TResult Function(int messageId, Duration position)? updatePosition,
+    TResult Function(int messageId, AudioPlayer player)? stopVoiceMessage,
+    TResult Function(int messageId, Duration seekPosition, AudioPlayer player)?
+        seekVoiceMessage,
+    TResult Function(List<ChatMessage> loadedMessages)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (cancelRecording != null) {
+      return cancelRecording();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SendMessage value) sendMessage,
+    required TResult Function(SendImage value) sendImage,
+    required TResult Function(SendDocument value) sendDocument,
+    required TResult Function(StartRecording value) startRecording,
+    required TResult Function(RecordingCountDown value) recordingCountDown,
+    required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
+    required TResult Function(PlayVoiceMessage value) playVoiceMessage,
+    required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
+    required TResult Function(UpdatePosition value) updatePosition,
+    required TResult Function(StopVoiceMessage value) stopVoiceMessage,
+    required TResult Function(SeekVoiceMessage value) seekVoiceMessage,
+    required TResult Function(LoadMessagesSuccess value) loadMessagesSuccess,
+  }) {
+    return cancelRecording(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SendMessage value)? sendMessage,
+    TResult? Function(SendImage value)? sendImage,
+    TResult? Function(SendDocument value)? sendDocument,
+    TResult? Function(StartRecording value)? startRecording,
+    TResult? Function(RecordingCountDown value)? recordingCountDown,
+    TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
+    TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult? Function(UpdatePosition value)? updatePosition,
+    TResult? Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult? Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult? Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+  }) {
+    return cancelRecording?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SendMessage value)? sendMessage,
+    TResult Function(SendImage value)? sendImage,
+    TResult Function(SendDocument value)? sendDocument,
+    TResult Function(StartRecording value)? startRecording,
+    TResult Function(RecordingCountDown value)? recordingCountDown,
+    TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
+    TResult Function(PlayVoiceMessage value)? playVoiceMessage,
+    TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
+    TResult Function(UpdatePosition value)? updatePosition,
+    TResult Function(StopVoiceMessage value)? stopVoiceMessage,
+    TResult Function(SeekVoiceMessage value)? seekVoiceMessage,
+    TResult Function(LoadMessagesSuccess value)? loadMessagesSuccess,
+    required TResult orElse(),
+  }) {
+    if (cancelRecording != null) {
+      return cancelRecording(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class CancelRecording implements ChatEvent {
+  const factory CancelRecording() = _$CancelRecordingImpl;
 }
 
 /// @nodoc
@@ -1648,6 +1869,7 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -1673,6 +1895,7 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -1693,6 +1916,7 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -1717,6 +1941,7 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -1736,6 +1961,7 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -1755,6 +1981,7 @@ class _$PlayVoiceMessageImpl implements PlayVoiceMessage {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -1868,6 +2095,7 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -1893,6 +2121,7 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -1913,6 +2142,7 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -1937,6 +2167,7 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -1956,6 +2187,7 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -1975,6 +2207,7 @@ class _$PauseVoiceMessageImpl implements PauseVoiceMessage {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -2089,6 +2322,7 @@ class _$UpdatePositionImpl implements UpdatePosition {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -2114,6 +2348,7 @@ class _$UpdatePositionImpl implements UpdatePosition {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -2134,6 +2369,7 @@ class _$UpdatePositionImpl implements UpdatePosition {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -2158,6 +2394,7 @@ class _$UpdatePositionImpl implements UpdatePosition {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -2177,6 +2414,7 @@ class _$UpdatePositionImpl implements UpdatePosition {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -2196,6 +2434,7 @@ class _$UpdatePositionImpl implements UpdatePosition {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -2309,6 +2548,7 @@ class _$StopVoiceMessageImpl implements StopVoiceMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -2334,6 +2574,7 @@ class _$StopVoiceMessageImpl implements StopVoiceMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -2354,6 +2595,7 @@ class _$StopVoiceMessageImpl implements StopVoiceMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -2378,6 +2620,7 @@ class _$StopVoiceMessageImpl implements StopVoiceMessage {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -2397,6 +2640,7 @@ class _$StopVoiceMessageImpl implements StopVoiceMessage {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -2416,6 +2660,7 @@ class _$StopVoiceMessageImpl implements StopVoiceMessage {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -2538,6 +2783,7 @@ class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -2563,6 +2809,7 @@ class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -2583,6 +2830,7 @@ class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -2607,6 +2855,7 @@ class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -2626,6 +2875,7 @@ class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -2645,6 +2895,7 @@ class _$SeekVoiceMessageImpl implements SeekVoiceMessage {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,
@@ -2760,6 +3011,7 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     required TResult Function() startRecording,
     required TResult Function(int secondsRemainin) recordingCountDown,
     required TResult Function() sendVoiceRecording,
+    required TResult Function() cancelRecording,
     required TResult Function(int messageId, AudioPlayer player)
         playVoiceMessage,
     required TResult Function(int messageId, AudioPlayer player)
@@ -2785,6 +3037,7 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult? Function()? startRecording,
     TResult? Function(int secondsRemainin)? recordingCountDown,
     TResult? Function()? sendVoiceRecording,
+    TResult? Function()? cancelRecording,
     TResult? Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult? Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult? Function(int messageId, Duration position)? updatePosition,
@@ -2805,6 +3058,7 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult Function()? startRecording,
     TResult Function(int secondsRemainin)? recordingCountDown,
     TResult Function()? sendVoiceRecording,
+    TResult Function()? cancelRecording,
     TResult Function(int messageId, AudioPlayer player)? playVoiceMessage,
     TResult Function(int messageId, AudioPlayer player)? pauseVoiceMessage,
     TResult Function(int messageId, Duration position)? updatePosition,
@@ -2829,6 +3083,7 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     required TResult Function(StartRecording value) startRecording,
     required TResult Function(RecordingCountDown value) recordingCountDown,
     required TResult Function(SendVoiceRecording value) sendVoiceRecording,
+    required TResult Function(CancelRecording value) cancelRecording,
     required TResult Function(PlayVoiceMessage value) playVoiceMessage,
     required TResult Function(PauseVoiceMessage value) pauseVoiceMessage,
     required TResult Function(UpdatePosition value) updatePosition,
@@ -2848,6 +3103,7 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult? Function(StartRecording value)? startRecording,
     TResult? Function(RecordingCountDown value)? recordingCountDown,
     TResult? Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult? Function(CancelRecording value)? cancelRecording,
     TResult? Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult? Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult? Function(UpdatePosition value)? updatePosition,
@@ -2867,6 +3123,7 @@ class _$LoadMessagesSuccessImpl implements LoadMessagesSuccess {
     TResult Function(StartRecording value)? startRecording,
     TResult Function(RecordingCountDown value)? recordingCountDown,
     TResult Function(SendVoiceRecording value)? sendVoiceRecording,
+    TResult Function(CancelRecording value)? cancelRecording,
     TResult Function(PlayVoiceMessage value)? playVoiceMessage,
     TResult Function(PauseVoiceMessage value)? pauseVoiceMessage,
     TResult Function(UpdatePosition value)? updatePosition,

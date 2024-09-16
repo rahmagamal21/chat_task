@@ -55,7 +55,10 @@ class ChatBubble extends StatelessWidget {
       );
     } else {
       return Container(
-        constraints: BoxConstraints(maxWidth: 260.w, minWidth: 122.w),
+        constraints: BoxConstraints(
+          maxWidth: 260.w,
+          minWidth: 122.w,
+        ),
         padding: EdgeInsets.all(message.type == MessageType.image ? 5.w : 15.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(

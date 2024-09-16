@@ -46,11 +46,24 @@ class InputField extends StatelessWidget {
                     // const SizedBox.expand(
                     //     //width: 10.w,
                     //     ),
-                    IconButton(
-                      icon: const Icon(Icons.stop),
-                      onPressed: () {
-                        chatBloc.add(const ChatEvent.sendVoiceRecording());
-                      },
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.stop),
+                          onPressed: () {
+                            chatBloc.add(const ChatEvent.sendVoiceRecording());
+                          },
+                        ),
+                        InkWell(
+                          child: const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.red,
+                          ),
+                          onTap: () {
+                            chatBloc.add(const ChatEvent.cancelRecording());
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

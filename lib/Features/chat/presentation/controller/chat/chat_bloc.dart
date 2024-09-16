@@ -35,6 +35,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<SendDocument>(_onSendDocument);
     on<StartRecording>(_onStartRecording);
     on<SendVoiceRecording>(_onSendVoiceRecording);
+    on<CancelRecording>(_onCancelRecording);
     on<PlayVoiceMessage>(_onPlayVoiceMessage);
     on<PauseVoiceMessage>(_onPause);
     on<StopVoiceMessage>(onStopVoiceMessage);
@@ -149,6 +150,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     //     add(ChatEvent.recordingCountDown(recordingCoutDown));
     //   }
     // });
+  }
+
+  void _onCancelRecording(
+      CancelRecording event, Emitter<ChatState> emit) async {
+    _recordingTimer?.cancel();
+
+    await record.stop();
+    final file = File(_filePath!);
+    if (await file.exists()) {
+      await file.delete();
+    }
+
+    // Reset the recording state
+    emit(state.copyWith(isRecording: false, recordingTime: 180));
   }
 
   void _onSendVoiceRecording(
