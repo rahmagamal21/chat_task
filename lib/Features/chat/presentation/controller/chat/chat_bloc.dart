@@ -245,7 +245,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _onPause(PauseVoiceMessage event, Emitter<ChatState> emit) {
-    event.player.stop();
+    event.player.pause();
     emit(
       state.copyWith(
         currentPosition: event.player.position.inSeconds.toDouble(),
