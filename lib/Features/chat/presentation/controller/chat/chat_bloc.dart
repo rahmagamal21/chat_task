@@ -58,9 +58,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _onSendMessage(SendMessage event, Emitter<ChatState> emit) {
     final time = DateFormat('h:mm a').format(DateTime.now());
-    if (controller.text.isNotEmpty) {
+    final messageText = controller.text.trim();
+    if (messageText.isNotEmpty) {
       final newMessage = ChatMessage(
-        content: controller.text,
+        content: messageText,
         type: MessageType.text,
         id: state.messages.length,
         isSender: true,
