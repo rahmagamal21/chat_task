@@ -22,6 +22,7 @@ part 'chat_bloc.freezed.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   TextEditingController controller = TextEditingController();
+  ScrollController scrollController = ScrollController();
   //final RecorderController recorderController = RecorderController();
   final AudioRecorder record = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -56,7 +57,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     add(LoadMessagesSuccess(loadedMessages));
   }
 
-  void _onSendMessage(SendMessage event, Emitter<ChatState> emit) {
+  void _onSendMessage(SendMessage event, Emitter<ChatState> emit) async {
     final time = DateFormat('h:mm a').format(DateTime.now());
     final messageText = controller.text.trim();
     if (messageText.isNotEmpty) {
@@ -69,7 +70,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
       emit(state.copyWith(messages: [newMessage, ...state.messages]));
       controller.clear();
+      await saveMessages(state.messages);
+      scrollToBottom();
     }
+  }
+
+  void scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.minScrollExtent, // Scroll to the bottom
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void _onSendImage(SendImage event, Emitter<ChatState> emit) async {
@@ -88,6 +103,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final updatedMessage = newMessage.copyWith(content: savedPath);
     emit(state.copyWith(messages: [updatedMessage, ...state.messages]));
     await saveMessages(state.messages);
+    scrollToBottom();
   }
 
   void _onSendDocument(SendDocument event, Emitter<ChatState> emit) async {
@@ -106,6 +122,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(messages: [updatedMessage, ...state.messages]));
 
     await saveMessages(state.messages);
+    scrollToBottom();
   }
 
   void _onStartRecording(StartRecording event, Emitter<ChatState> emit) async {
@@ -199,6 +216,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         emit(state.copyWith(messages: [newMessage, ...state.messages]));
 
         await saveMessages(state.messages);
+        scrollToBottom();
       } else {
         throw Exception('Voice file does not exist.');
       }

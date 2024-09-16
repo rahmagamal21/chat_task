@@ -42,6 +42,7 @@ class ChatPage extends StatelessWidget {
                     child: BlocBuilder<ChatBloc, ChatState>(
                       builder: (context, state) {
                         return ListView.separated(
+                          controller: context.read<ChatBloc>().scrollController,
                           shrinkWrap: true,
                           reverse: true,
                           // physics: const ClampingScrollPhysics(),
